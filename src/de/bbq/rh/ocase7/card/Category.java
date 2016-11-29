@@ -1,0 +1,200 @@
+package de.bbq.rh.ocase7.card;
+
+import de.bbq.rh.ocase7.database.IMySQLDatabaseDAO;
+import de.bbq.rh.ocase7.database.MySQLConnection;
+import de.bbq.rh.ocase7.Test;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author $ Lyn Mildner
+ */
+public class Category implements IMySQLDatabaseDAO {
+    private int id;
+    private String name;
+
+    public int getId() {
+        return this.id;
+    }
+
+    private void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    private void setName(String name) {
+        this.name = name;
+    }
+
+    public Category(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+    
+    public Category(String name) {
+        this.id = 0;
+        this.name = name;
+    }
+    
+    public Category() {
+        this.id = 0;
+        this.name = "default category";
+    }
+
+    @Override
+    public String toString() {
+        return "Category{" + "id=" + this.id + ", name=" + this.name + '}';
+    }
+    
+    @Override
+    public Category getById(int id) {
+        Category c = null;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM category WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                c = new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("category"));
+            }         
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (MySQLConnection.pst != null) {
+                    MySQLConnection.pst.close();
+                }
+                if (MySQLConnection.rst != null) {
+                    MySQLConnection.rst.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            MySQLConnection.closeConnection();
+        }
+        return c;
+    }
+    
+    @Override
+    public ArrayList<Category> getAllList() {
+        ArrayList<Category> c =  new ArrayList();
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM category";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                c.add(new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("category")));
+            }
+            c.forEach((i) -> {
+                System.out.println(i.toString());
+            });
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (MySQLConnection.pst != null) {
+                    MySQLConnection.pst.close();
+                }
+                if (MySQLConnection.rst != null) {
+                    MySQLConnection.rst.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            MySQLConnection.closeConnection();
+        }
+        return c;
+    }
+    
+    @Override
+    public void delete(int id) {
+    try {
+        Connection con = MySQLConnection.getConnection();
+        String sql = "DELETE FROM category WHERE id = ?";
+        MySQLConnection.pst = con.prepareStatement(sql);
+        MySQLConnection.pst.setInt(1, id);
+        MySQLConnection.pst.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (MySQLConnection.pst != null) {
+                    MySQLConnection.pst.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            MySQLConnection.closeConnection();
+        }
+    }
+
+    public void update(Category c) {
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "UPDATE category SET text = ? WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setString(1, c.getName());
+            MySQLConnection.pst.setInt(2, c.getId());
+            MySQLConnection.pst.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (MySQLConnection.pst != null) {
+                    MySQLConnection.pst.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+            MySQLConnection.closeConnection();
+        }
+    }
+
+    public void insert(Category c) {
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "INSERT INTO category VALUES(null, ?)";
+            if (c.getId() == 0) {
+                //1 Object is saved through MySQL
+                //created PK should be returned
+                MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                MySQLConnection.pst.setString(1, c.getName());
+                MySQLConnection.pst.executeUpdate();
+                MySQLConnection.rst = MySQLConnection.pst.getGeneratedKeys();
+                while (MySQLConnection.rst.next()) {
+                c.id = MySQLConnection.rst.getInt(1);
+                }  
+            }       
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        } finally {
+            try {
+                if (MySQLConnection.pst != null) {
+                    MySQLConnection.pst.close();
+                }
+                if (MySQLConnection.rst != null) {
+                    MySQLConnection.rst.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            MySQLConnection.closeConnection();
+        }
+    }   
+}
