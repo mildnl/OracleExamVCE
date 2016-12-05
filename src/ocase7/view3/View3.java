@@ -36,6 +36,7 @@ public class View3 {
         Scene view3Scene = new Scene(view3Root, Color.DEEPSKYBLUE);
 
         HBox statusBar = createHboxForTop();
+        HBox buttonBar= createHBoxForDown();
         VBox viewContentBox = new VBox();
         ScrollPane questionAndAnswerPane = new ScrollPane();
         myCard = Card.getCardsByCategory(Category.getCategoryById(4));
@@ -55,11 +56,11 @@ public class View3 {
         //answerScrollBar.setOrientation(Orientation.VERTICAL);
         questionAndAnswerPane.setMinWidth(600);
         questionAndAnswerPane.setMinHeight(400);
-        viewContentBox.getChildren().addAll(statusBar, questionAndAnswerPane);
+        viewContentBox.getChildren().addAll(statusBar, questionAndAnswerPane,buttonBar);
         view3Root.getChildren().addAll(viewContentBox);
         questionAndAnswerPane.setContent(questionLbl);
         questionAndAnswerPane.setContent(answerBox);
-
+        
         return view3Scene;
     }
 
@@ -88,5 +89,26 @@ public class View3 {
 
         statusBar.getChildren().addAll(prevQuestionBtn, lblQuestionNumber, seperateSign, totalNumberOfQuestions, nextQuestionBtn);
         return statusBar;
+    }
+    
+    private HBox createHBoxForDown(){
+        
+         HBox buttonBar = new HBox();
+         buttonBar.setSpacing(150);
+         buttonBar.setMinWidth(600);
+         buttonBar.setMinHeight(20);
+         buttonBar.setAlignment(Pos.BOTTOM_CENTER);
+          buttonBar.setStyle("-fx-border-style: solid;"
+                + "-fx-border-width: 1;"
+                + "-fx-border-color: grey;");
+          Button followUp = new Button("Wiedervorlage");   
+          followUp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+          Button cheater = new Button("Cheater-Knopf"); 
+          cheater.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+          Button save = new Button("Session fertig");   
+          save.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+          buttonBar.getChildren().addAll(followUp,cheater,save);
+          
+         return buttonBar;
     }
 }
