@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package ocase7;
 
 import ocase7.view3.View3;
@@ -65,7 +60,7 @@ public class mainView extends Application {
         //ocaseLoginView.LoginView loginView = new LoginView();
         //Scene loginScene = loginView.createLoginView();
         primaryStage.setScene(view3Scene);
-//        primaryStage.setScene(launchViewScene);
+        //primaryStage.setScene(launchViewScene);
         //primaryStage.setFullScreen(true);
         primaryStage.show();
     }
