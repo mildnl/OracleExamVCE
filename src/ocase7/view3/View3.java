@@ -94,6 +94,7 @@ public class View3 {
     private HBox createHBoxForDown(){
         
          HBox buttonBar = new HBox();
+         
          buttonBar.setSpacing(150);
          buttonBar.setMinWidth(600);
          buttonBar.setMinHeight(20);
@@ -101,12 +102,16 @@ public class View3 {
           buttonBar.setStyle("-fx-border-style: solid;"
                 + "-fx-border-width: 1;"
                 + "-fx-border-color: grey;");
+          
           Button followUp = new Button("Wiedervorlage");   
-          followUp.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+          followUp.setMinWidth(100);
+          
           Button cheater = new Button("Cheater-Knopf"); 
-          cheater.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+          cheater.setMinWidth(100);
+          
           Button save = new Button("Session fertig");   
-          save.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+          save.setMinWidth(100);
+          
           buttonBar.getChildren().addAll(followUp,cheater,save);
           
          return buttonBar;
