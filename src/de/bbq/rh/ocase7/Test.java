@@ -1,7 +1,5 @@
 package de.bbq.rh.ocase7;
 
-
-
 import de.bbq.rh.ocase7.database.MySQLConnection;
 import de.bbq.rh.ocase7.database.IMySQLDatabaseDAO;
 import java.sql.Connection;
@@ -84,8 +82,8 @@ public class Test implements IMySQLDatabaseDAO {
     }
     
     @Override
-    public Test getById(int id) {
-        Test t = null;
+    public <E> E getById(E elem, int id) {
+        Test t = (Test)elem;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM test WHERE id = ?";
@@ -98,21 +96,8 @@ public class Test implements IMySQLDatabaseDAO {
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
-        return t;
+        return (E) t;
     }
     
     @Override
@@ -120,7 +105,7 @@ public class Test implements IMySQLDatabaseDAO {
         ArrayList<Test> t =  new ArrayList();
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM test LIMIT 1000";
+            String sql = "SELECT * FROM test";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
@@ -132,19 +117,6 @@ public class Test implements IMySQLDatabaseDAO {
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
         return t;
     }
@@ -159,19 +131,12 @@ public class Test implements IMySQLDatabaseDAO {
         MySQLConnection.pst.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            MySQLConnection.closeConnection();
         }
     }
 
-    public void update(Test t) {
+    @Override
+    public <E> void update(E elem) {
+        Test t = (Test) elem;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "UPDATE test SET text = ? WHERE id = ?";
@@ -181,19 +146,12 @@ public class Test implements IMySQLDatabaseDAO {
             MySQLConnection.pst.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            MySQLConnection.closeConnection();
         }
     }
 
-    public void insert(Test t) {
+    @Override
+    public <E> void insert(E elem) {
+        Test t = (Test) elem;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "INSERT INTO test VALUES(null, ?)";
@@ -211,19 +169,6 @@ public class Test implements IMySQLDatabaseDAO {
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
     }   
 }

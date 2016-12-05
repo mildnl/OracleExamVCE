@@ -22,7 +22,7 @@ public class Category implements IMySQLDatabaseDAO {
         return this.id;
     }
 
-    private void setId(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -30,7 +30,7 @@ public class Category implements IMySQLDatabaseDAO {
         return this.name;
     }
 
-    private void setName(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -55,8 +55,8 @@ public class Category implements IMySQLDatabaseDAO {
     }
     
     @Override
-    public Category getById(int id) {
-        Category c = null;
+    public <E> E getById(E elem, int id) {
+        Category c = (Category) elem;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM category WHERE id = ?";
@@ -64,26 +64,48 @@ public class Category implements IMySQLDatabaseDAO {
             MySQLConnection.pst.setInt(1, id);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c = new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("category"));
+                c = new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text"));
             }         
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
-        return c;
+        return (E) c;
+    }
+    
+    public String getCategoryNameByCategoryID(int id) {
+        String categroyName = null;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT text FROM category WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                categroyName = MySQLConnection.rst.getString("text");
+            }         
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return categroyName;
+    }
+    
+    public int getQuestionID2CategoryID(int questionID) {
+        int categoryID = 0;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM category2question WHERE question_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, questionID);
+            while (MySQLConnection.rst.next()) {
+                categoryID = MySQLConnection.rst.getInt("category_id");
+            }         
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return categoryID;
     }
     
     @Override
@@ -95,7 +117,7 @@ public class Category implements IMySQLDatabaseDAO {
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.add(new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("category")));
+                c.add(new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
             }
             c.forEach((i) -> {
                 System.out.println(i.toString());
@@ -103,19 +125,6 @@ public class Category implements IMySQLDatabaseDAO {
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
         return c;
     }
@@ -130,19 +139,12 @@ public class Category implements IMySQLDatabaseDAO {
         MySQLConnection.pst.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            MySQLConnection.closeConnection();
         }
     }
 
-    public void update(Category c) {
+    @Override
+    public <E> void update(E elem) {
+        Category c = (Category)elem;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "UPDATE category SET text = ? WHERE id = ?";
@@ -152,19 +154,12 @@ public class Category implements IMySQLDatabaseDAO {
             MySQLConnection.pst.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-            MySQLConnection.closeConnection();
         }
     }
 
-    public void insert(Category c) {
+    @Override
+    public <E> void insert(E elem) {
+        Category c = (Category)elem;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "INSERT INTO category VALUES(null, ?)";
@@ -182,19 +177,6 @@ public class Category implements IMySQLDatabaseDAO {
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
     }   
 }

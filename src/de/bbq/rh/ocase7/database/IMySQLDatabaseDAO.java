@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package de.bbq.rh.ocase7.database;
 
 import java.util.ArrayList;
@@ -17,13 +12,13 @@ public interface IMySQLDatabaseDAO {
     String USER = "Petra";
     String PASSWORD = "Panke";
     
-    public Object getById(int id);
+    public <E extends Object> E getById(E elem, int id);
     
     public ArrayList<?> getAllList();
     
     public void delete(int id);
     
-//    public void update();
-//    
-//    public void insert();
+    public <E> void update(E elem);
+    
+    public <E> void insert(E elem);
 }

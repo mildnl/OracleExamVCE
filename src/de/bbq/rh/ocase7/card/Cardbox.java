@@ -14,56 +14,40 @@ import java.util.logging.Logger;
  * @author $ Lyn Mildner
  */
 public class Cardbox implements IMySQLDatabaseDAO {
-    private Card card;
+    private ArrayList<Card> cardBox;
 
-    public Card getCard() {
-        return this.card;
+    public ArrayList<Card> getCardBox() {
+        return cardBox;
     }
 
-    private void setCard(Card card) {
-        this.card = card;
-    }
-    
-    public Cardbox(int id, String question) {
-        this.card = new Card(id, question);
+    public void setCardBox(ArrayList<Card> cardBox) {
+        this.cardBox = cardBox;
     }
     
     public Cardbox() {
-        this.card = new Card();
+        this.cardBox = new ArrayList<>();
+        this.cardBox.add(new Card());
     }
 
     @Override
-    public Object getById(int id) {
+    public <E> E getById(E elem, int id) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public ArrayList<Cardbox> getAllList() {
-        ArrayList<Cardbox> c =  new ArrayList();
+    public ArrayList<Card> getAllList() {
+        ArrayList<Card> c =  new ArrayList();
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM question";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.add(new Cardbox(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("question")));
+                c.add(new Card(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
-        } finally {
-            try {
-                if (MySQLConnection.pst != null) {
-                    MySQLConnection.pst.close();
-                }
-                if (MySQLConnection.rst != null) {
-                    MySQLConnection.rst.close();
-                }
-            } catch (SQLException ex) {
-                System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            MySQLConnection.closeConnection();
         }
         return c; 
     }
@@ -71,6 +55,16 @@ public class Cardbox implements IMySQLDatabaseDAO {
     @Override
     public void delete(int id) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public <E> void update(E elem) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public <E> void insert(E elem) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
