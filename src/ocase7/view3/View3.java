@@ -30,6 +30,7 @@ import ocase7.Category;
 public class View3 {
 
     ocase7.Card myCard;
+    ocase7.CardBox myCardBox;
 
     public Scene createView3() {
         Group view3Root = new Group();
@@ -79,7 +80,7 @@ public class View3 {
         Label seperateSign = new Label(" / ");
         seperateSign.setFont(Font.font("Arial", 18));
 
-        Label totalNumberOfQuestions = new Label("Totalnumber");
+        Label totalNumberOfQuestions = new Label(""+myCardBox.getNumberOfCards());
         totalNumberOfQuestions.setFont(Font.font("Arial", 18));
 
         Button nextQuestionBtn = new Button("Vor");

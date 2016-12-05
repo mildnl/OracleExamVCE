@@ -101,4 +101,14 @@ public class Card {
         return "Card{" + "id=" + id + ", question=" + question + ", answers=" + answers + '}';
     }
 
+    //##################sani was here#####################################
+    // erstellt Card mit Frage und dazugehörigen Antworten
+    
+    public Card(int question_id) {
+        this.id = question_id;
+        this.question = Question.getQuestionById(question_id);
+        this.answers = Answer.getAnswersByQuestion(question);
+    }
+    
+    //#####################sani was here###################################
 }

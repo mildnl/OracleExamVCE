@@ -14,6 +14,11 @@ import java.util.ArrayList;
 public class CardBox {
 
     private ArrayList<Card> cards;
+    private int NumberOfCards;
+
+    public int getNumberOfCards() {
+        return NumberOfCards;
+    }
 
     public ArrayList<Card> getCards() {
         return cards;
@@ -23,27 +28,51 @@ public class CardBox {
         this.cards = cards;
     }
 
-    public CardBox(ArrayList<Card> cards) {
-        this.cards = cards;
-        
-    }
-
-    public CardBox() {
-    }
+//    public CardBox(ArrayList<Card> cards) {
+//        this.cards = cards;
+//        this.NumberOfCards = cards.size();
+//
+//    }
 
     
+    //###############sani was here###############################
     
-    public CardBox fillCardBox(Card card) {
-        if (cards == null) {
-            this.cards = new ArrayList<>();
-        }
-        if (!(cards.contains(card.getId()))) {
-            cards.add(card);
-        }
-
-        return this;
+    // neue CardBox wird direkt mit Karten erstellt
+    // setzt Gesamtanzahl der Karten
+    
+    
+    public CardBox(ArrayList<Category> categories) {
+        this.cards = fillCardBox(categories);
+        this.NumberOfCards=cards.size();
     }
+       
+    
+    // füllt CardBox:
+    // durchläuft KategorienArray und zieht sich dabei die dazugehörigen Fragen,    
+    // überprüft ob die Frage im questionsArray schon erhalten ist,
+    // wenn nicht, wird es dem questionsArray hinzugefügt
+    //befüllt Card über jede QuestionID die sich nun im questionsArray befindet
+    //gibt CardsArray zurück
 
+    public ArrayList<Card> fillCardBox(ArrayList<Category> categories) {
+        ArrayList<Question> questions = new ArrayList<>();
+        ArrayList<Card> cardsi = new ArrayList<>();
+        for (Category category : categories) {
+            for (Question question : Question.getAllQuestionsByCategoryId(category.getId())) {
+                if (!questions.contains(question)) {
+                    questions.add(question);
+                }
+            }
+        }
+        for (Question question : questions) {
+            cardsi.add(new Card(question.getId()));
+        }
+
+        return cardsi;
+
+    }
+//######################sani was here#####################################################
+    
     @Override
     public String toString() {
         return "CardBox{" + "cards=" + cards + '}';
