@@ -1,6 +1,7 @@
 package ocase7.view3;
 
 import com.sun.javafx.scene.control.skin.DatePickerContent;
+import java.util.ArrayList;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -17,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import ocase7.Card;
+import ocase7.CardBox;
 import ocase7.Category;
 
 /**
@@ -26,35 +28,39 @@ import ocase7.Category;
 public class View3 {
 
     ocase7.Card myCard;
+       
 
     public Scene createView3() {
         Group view3Root = new Group();
         Scene view3Scene = new Scene(view3Root, Color.DEEPSKYBLUE);
-        
-        //Erstelle Boxen für Layout
+
+        //Erstelle Boxen für Layout        
         myCard = Card.getCardsByCategory(Category.getCategoryById(1));
         VBox view3ContentBox = new VBox();
         HBox statusBar = createHboxForTop();
+        HBox buttonBar = createHBoxForDown();
         ScrollPane answerAndQuestionScrollPane = new ScrollPane();
         VBox scrollPaneContent = new VBox();
         VBox questionBox = new VBox();
+        questionBox.setMinWidth(600);
+        questionBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;");
         Label questionLabel = new Label(myCard.getQuestion().getText());
         VBox answersBox = new VBox();
         HBox checkboxWithAnswerBox = new HBox();
         for (int i = 0; i < myCard.getAnswers().size(); i++) {
             CheckBox cb = new CheckBox();
             Label answerLabel = new Label(myCard.getAnswers().get(i).getText());
-            checkboxWithAnswerBox = new HBox(cb,answerLabel);
+            checkboxWithAnswerBox = new HBox(cb, answerLabel);
             answersBox.getChildren().add(checkboxWithAnswerBox);
             answersBox.setSpacing(20);
         }
-        
+
         //fülle Boxen mit ihren Elementen
         questionBox.getChildren().add(questionLabel);
         scrollPaneContent.getChildren().addAll(questionBox, answersBox);
         answerAndQuestionScrollPane.setContent(scrollPaneContent);
-        view3ContentBox.getChildren().addAll(statusBar, answerAndQuestionScrollPane);
-        
+        view3ContentBox.getChildren().addAll(statusBar, answerAndQuestionScrollPane, buttonBar);
+
         //übergebe den gesamten Inhalt an Group
         view3Root.getChildren().add(view3ContentBox);
 
@@ -77,7 +83,7 @@ public class View3 {
         Label seperateSign = new Label(" / ");
         seperateSign.setFont(Font.font("Arial", 18));
 
-        Label totalNumberOfQuestions = new Label("Totalnumber");
+        Label totalNumberOfQuestions = new Label("TotalNumber");
         totalNumberOfQuestions.setFont(Font.font("Arial", 18));
 
         Button nextQuestionBtn = new Button("Vor");
@@ -87,5 +93,31 @@ public class View3 {
 
         statusBar.getChildren().addAll(prevQuestionBtn, lblQuestionNumber, seperateSign, totalNumberOfQuestions, nextQuestionBtn);
         return statusBar;
+    }
+
+    private HBox createHBoxForDown() {
+
+        HBox buttonBar = new HBox();
+
+        buttonBar.setSpacing(150);
+        buttonBar.setMinWidth(600);
+        buttonBar.setMinHeight(40);
+        buttonBar.setAlignment(Pos.CENTER);
+        buttonBar.setStyle("-fx-border-style: solid;"
+                + "-fx-border-width: 1;"
+                + "-fx-border-color: grey;");
+
+        Button followUp = new Button("Wiedervorlage");
+        followUp.setMinWidth(100);
+
+        Button cheater = new Button("Cheater-Knopf");
+        cheater.setMinWidth(100);
+
+        Button save = new Button("Session fertig");
+        save.setMinWidth(100);
+
+        buttonBar.getChildren().addAll(followUp, cheater, save);
+
+        return buttonBar;
     }
 }

@@ -54,7 +54,7 @@ public class CardBox {
     //befüllt Card über jede QuestionID die sich nun im questionsArray befindet
     //gibt CardsArray zurück
 
-    public ArrayList<Card> fillCardBox(ArrayList<Category> categories) {
+    public static ArrayList<Card> fillCardBox(ArrayList<Category> categories) {
         ArrayList<Question> questions = new ArrayList<>();
         ArrayList<Card> cardsi = new ArrayList<>();
         for (Category category : categories) {
