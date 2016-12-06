@@ -41,7 +41,7 @@ public class View3 {
     HBox checkboxWithAnswerBox;
 
     private void fillCategories() {
-        categories.add(Category.getCategoryById(5));
+        categories.add(Category.getCategoryById(1));
         cardBox = new CardBox(categories);
         //System.out.println(cardBox.getCards() + "########" + cardBox.getNumberOfCards());
 
@@ -101,18 +101,6 @@ public class View3 {
         questionBox.setStyle("-fx-border-style: solid;" + "-fx-border-width: 1;");
     }
 
-//    private void createCheckboxWithAnswerBox() {
-//        answersBox = new VBox();
-//        HBox checkboxWithAnswerBox = new HBox();
-//        checkboxWithAnswerBox.setAlignment(Pos.CENTER);
-//        for (int i = 0; i < myCard.getAnswers().size(); i++) {
-//            CheckBox cb = new CheckBox();
-//            answerLabel = new Label(myCard.getAnswers().get(i).getText());
-//            checkboxWithAnswerBox = new HBox(cb, answerLabel);
-//            answersBox.getChildren().add(checkboxWithAnswerBox);
-//            answersBox.setSpacing(20);
-//        }
-//    }
     private HBox createHboxForTop() {
         HBox statusBar = new HBox();
         statusBar.setSpacing(10);
@@ -139,12 +127,17 @@ public class View3 {
             @Override
             public void handle(ActionEvent event) {
                 
+                //lösche Elemente aus Boxen -> Clear oder remove sind die Zauberwörter !!!
                 questionBox.getChildren().remove(questionLabel);
                 answersBox.getChildren().clear();
                 
+                // setze den neuen Text in das Label 
                 questionLabel.setText(cardBox.getCards().get(1).getQuestion().getText());
                 //System.out.println(cardBox.getCards().get(1));
+                // füge Neues Label wieder zur questionBox hinzu
                 questionBox.getChildren().add(questionLabel);
+                
+                // erstelle neue Antwortbox
                 answersBox = new VBox();
                 checkboxWithAnswerBox = new HBox();
                 checkboxWithAnswerBox.setAlignment(Pos.CENTER);
@@ -152,7 +145,6 @@ public class View3 {
                 for (int i = 0; i < myCard.getAnswers().size(); i++) {
                     CheckBox cb = new CheckBox();
                     answerLabel = new Label(cardBox.getCards().get(1).getAnswers().get(i).getText());
-                    
                     checkboxWithAnswerBox = new HBox(cb, answerLabel);
                     answersBox.getChildren().add(checkboxWithAnswerBox);
                     answersBox.setSpacing(20);
@@ -160,6 +152,7 @@ public class View3 {
                 scrollPaneContent.getChildren().add(answersBox);
             }
         });
+        
         Button prevQuestionBtn = new Button("Zurück");
         prevQuestionBtn.setMinWidth(60);
 
