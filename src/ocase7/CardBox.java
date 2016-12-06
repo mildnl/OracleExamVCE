@@ -73,6 +73,11 @@ public class CardBox {
     }
 //######################sani was here#####################################################
     
+    public Card nextCard(int id) {
+        return this.cards.get(id+1);
+    }
+    
+    
     @Override
     public String toString() {
         return "CardBox{" + "cards=" + cards + '}';

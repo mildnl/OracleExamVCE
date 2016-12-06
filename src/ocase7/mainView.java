@@ -21,6 +21,8 @@ public class mainView extends Application {
      @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Ocase 7");
+        primaryStage.setMinHeight(800);
+        primaryStage.setMinWidth(600);
         View3 view3 = new View3();
         Scene view3Scene =  view3.createView3();
         LaunchView launchView = new LaunchView();
@@ -39,7 +41,7 @@ public class mainView extends Application {
 //                    Thread thread = new Thread();
 //                    thread.setDaemon(true);
                     Thread.sleep(10000);
-                    System.out.println(Thread.activeCount());
+                    //System.out.println(Thread.activeCount());
                 } catch (InterruptedException e) {
                     throw new ExceptionInInitializerError(e.getMessage());
                 }
