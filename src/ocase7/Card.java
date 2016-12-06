@@ -101,6 +101,7 @@ public class Card {
         return "Card{" + "id=" + id + ", question=" + question + ", answers=" + answers + '}';
     }
 
+    
     //##################sani was here#####################################
     // erstellt Card mit Frage und dazugehörigen Antworten
     
