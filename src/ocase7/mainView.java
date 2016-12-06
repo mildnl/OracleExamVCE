@@ -49,7 +49,7 @@ public class mainView extends Application {
             }
         };
         
-        System.out.println(Thread.activeCount());
+        //System.out.println(Thread.activeCount());
         
         sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override

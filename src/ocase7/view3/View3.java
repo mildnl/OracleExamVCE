@@ -141,7 +141,13 @@ public class View3 {
                 answersBox = new VBox();
                 checkboxWithAnswerBox = new HBox();
                 checkboxWithAnswerBox.setAlignment(Pos.CENTER);
-                System.out.println(cardBox.getCards().get(1));
+                //System.out.println(cardBox.getCards().get(1));
+                
+                
+                //############ Hier steckt der Bug drin ###############
+                //############ Es werden nur 5 Answers ausgelesen obwohl 7 erwartet werden ###############
+                
+                System.out.println(cardBox.getCards().get(4).getAnswers().size());
                 for (int i = 0; i < myCard.getAnswers().size(); i++) {
                     CheckBox cb = new CheckBox();
                     answerLabel = new Label(cardBox.getCards().get(1).getAnswers().get(i).getText());
@@ -150,6 +156,7 @@ public class View3 {
                     answersBox.setSpacing(20);
                 }
                 scrollPaneContent.getChildren().add(answersBox);
+                //############ ######################### ###############
             }
         });
         
