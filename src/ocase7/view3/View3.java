@@ -27,13 +27,24 @@ import ocase7.Category;
  */
 public class View3 {
 
+    
     ocase7.Card myCard;
-       
+    CardBox cardBox;
+    ArrayList<Category> categories = new ArrayList<>();
+    
 
+    private void fillCategories() {
+        categories.add(Category.getCategoryById(1));
+        cardBox = new CardBox(categories);
+        System.out.println(cardBox.getCards());
+
+    }
+    
     public Scene createView3() {
+        fillCategories();
         Group view3Root = new Group();
         Scene view3Scene = new Scene(view3Root, Color.DEEPSKYBLUE);
-
+        
         //Erstelle Boxen für Layout        
         myCard = Card.getCardsByCategory(Category.getCategoryById(1));
         VBox view3ContentBox = new VBox();

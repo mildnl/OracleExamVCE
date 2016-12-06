@@ -16,7 +16,7 @@ public class Ocase7 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
 //        System.out.println(Test.getById(3));
 //        Test.delete(3);
 //        
@@ -51,32 +51,32 @@ public class Ocase7 {
 
 //########################sani was here##########################################
 
-        // zeigt CategoryTexte an
-        ArrayList<Category> categories = Category.getAll();
-        for (Category category : categories) {
-            System.out.println(category.getId() + " " + category.getText());
-        }
-        // befüllt CategoryArray mit ausgewählten CategoryIds
+//        // zeigt CategoryTexte an
+//        ArrayList<Category> categories = Category.getAll();
+//        for (Category category : categories) {
+//            System.out.println(category.getId() + " " + category.getText());
+//        }
+//        // befüllt CategoryArray mit ausgewählten CategoryIds
+//
+//        ArrayList<Category> choosenCategories = new ArrayList<>();
+//        choosenCategories.add(categories.get(0));
+//        choosenCategories.add(categories.get(1));
+//
+//        // erstellt neue CardBox anhand der eben erstellten CategoryArray
+//        
+//        CardBox cardbox = new CardBox(choosenCategories);
+//
+//        // Gibt jede Karte(Frage+Antworten) aus der CardBoy aus
+//        
+//        for (Card card : cardbox.getCards()) {
+//            System.out.println(card.getQuestion().getText() + "      " + card.getId());
+//            for (Answer answer : card.getAnswers()) {
+//                System.out.println(answer.getText());
+//            }
+//
+//            MySQLConnection.closeConnection();
+//        }
 
-        ArrayList<Category> choosenCategories = new ArrayList<>();
-        choosenCategories.add(categories.get(0));
-        choosenCategories.add(categories.get(1));
-
-        // erstellt neue CardBox anhand der eben erstellten CategoryArray
-        
-        CardBox cardbox = new CardBox(choosenCategories);
-
-        // Gibt jede Karte(Frage+Antworten) aus der CardBoy aus
-        
-        for (Card card : cardbox.getCards()) {
-            System.out.println(card.getQuestion().getText() + "      " + card.getId());
-            for (Answer answer : card.getAnswers()) {
-                System.out.println(answer.getText());
-            }
-
-            MySQLConnection.closeConnection();
-        }
-
-    }
+    //}
 //#################sani was here#########################################
 }
