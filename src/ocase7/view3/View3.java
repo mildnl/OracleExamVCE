@@ -39,12 +39,13 @@ public class View3 {
     Label questionLabel;
     Label answerLabel;
     HBox checkboxWithAnswerBox;
-    Label lblQuestionNumber;
+    Label questionNumberLabel;
+    String questionNumber;
     
     private void fillCategories() {
         categories.add(Category.getCategoryById(1));
         cardBox = new CardBox(categories);
-        System.out.println(cardBox.getCards() + "########" + cardBox.getNumberOfCards());
+        //System.out.println(cardBox.getCards() + "########" + cardBox.getNumberOfCards());
 
     }
 
@@ -87,7 +88,6 @@ public class View3 {
             answersBox.getChildren().add(checkboxWithAnswerBox);
             answersBox.setSpacing(20);
         }
-        //createCheckboxWithAnswerBox();
 
         //fülle Boxen mit ihren Elementen
         questionBox.getChildren().add(questionLabel);
@@ -117,9 +117,9 @@ public class View3 {
         statusBar.setStyle("-fx-border-style: solid;"
                 + "-fx-border-width: 1;"
                 + "-fx-border-color: grey;");
-        String questionNumber = "" + (cardBox.getCards().indexOf(myCard)+1);
-        lblQuestionNumber = new Label(questionNumber);
-        lblQuestionNumber.setFont(Font.font("Arial", 18));
+        //questionNumber = "1";
+        questionNumberLabel = new Label("1");
+        questionNumberLabel.setFont(Font.font("Arial", 18));
 
         Label seperateSign = new Label(" / ");
         seperateSign.setFont(Font.font("Arial", 18));
@@ -139,7 +139,7 @@ public class View3 {
                 questionBox.getChildren().clear();
                 answersBox.getChildren().clear();
                 myCard = cardBox.nextCard(cardBox.getCards().indexOf(myCard));
-                lblQuestionNumber.setText("" + (cardBox.getCards().indexOf(myCard) +1));
+                questionNumberLabel.setText("" + (cardBox.getCards().indexOf(myCard) +1));
                 
                 // setze den neuen Text in das Label 
                 questionLabel.setText(myCard.getQuestion().getText());
@@ -167,13 +167,14 @@ public class View3 {
         prevQuestionBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                 // lösche Elemente aus Boxen -> clear() löscht alle Elemente
+                // lösche Elemente aus Boxen -> clear() löscht alle Elemente
                 // aus den Boxen, mit remove(element,element) kann man gezielt 
                 // Elemente aus den Boxen löschen
                 questionBox.getChildren().clear();
                 answersBox.getChildren().clear();
+                //System.out.println(cardBox.prevCard(cardBox.getCards().indexOf(myCard)));
                 myCard = cardBox.prevCard(cardBox.getCards().indexOf(myCard));
-                lblQuestionNumber.setText("" + (cardBox.getCards().indexOf(myCard)));
+                questionNumberLabel.setText("" + (cardBox.getCards().indexOf(myCard)+1));
                 
                 // setze den neuen Text in das Label 
                 questionLabel.setText(myCard.getQuestion().getText());
@@ -196,7 +197,7 @@ public class View3 {
             }
         });
 
-        statusBar.getChildren().addAll(prevQuestionBtn, lblQuestionNumber, seperateSign, totalNumberOfQuestions, nextQuestionBtn);
+        statusBar.getChildren().addAll(prevQuestionBtn, questionNumberLabel, seperateSign, totalNumberOfQuestions, nextQuestionBtn);
         return statusBar;
     }
 

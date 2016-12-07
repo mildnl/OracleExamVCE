@@ -74,11 +74,19 @@ public class CardBox {
 //######################sani was here, paul 2#####################################################
     
     public Card nextCard(int cardBoxIndex) {
-        return this.cards.get(cardBoxIndex +1);
+        if(cardBoxIndex < cards.size()-1) {
+            return cards.get(cardBoxIndex +1);
+        } else {
+            return cards.get(0);
+        }
     }
     
     public Card prevCard(int cardBoxIndex) {
-        return this.cards.get(cardBoxIndex -1);
+        if(cardBoxIndex > 0 ) {
+            return cards.get(cardBoxIndex -1);
+        } else {
+            return cards.get(cards.size()-1);
+        }
     }
     
     

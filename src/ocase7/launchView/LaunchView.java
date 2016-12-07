@@ -26,6 +26,7 @@ import javafx.util.Duration;
 public class LaunchView {
     public Scene createLaunchView() {
         Group launchViewRoot = new Group();
+        launchViewRoot.setAutoSizeChildren(true);
         Scene launchViewScene = new Scene(launchViewRoot, 600, 800, Color./*GREENYELLOW*/DEEPSKYBLUE);
         
 

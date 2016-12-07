@@ -29,7 +29,8 @@ public class mainView extends Application {
         Scene view3Scene =  view3.createView3();
         LaunchView launchView = new LaunchView();
         Scene launchViewScene = launchView.createLaunchView();
-        primaryStage.setScene(launchViewScene);
+        //primaryStage.setScene(launchViewScene);
+        primaryStage.setScene(view3Scene);
         //LoginView loginView = new LoginView();
         //Scene loginscene = loginView.createLoginView();
         Task<Void> sleeper = new Task<Void>() {
@@ -56,14 +57,16 @@ public class mainView extends Application {
         sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                //primaryStage.setScene(loginscene);
+                primaryStage.setScene(view3Scene);
             }
         });
          new Thread(sleeper).start();
         
         //ocaseLoginView.LoginView loginView = new LoginView();
         //Scene loginScene = loginView.createLoginView();
-        primaryStage.setScene(view3Scene);
+        
+        //primaryStage.setScene(lv.createLaunchView());
+        //primaryStage.setScene(view3Scene);
         //primaryStage.setScene(launchViewScene);
         //primaryStage.setFullScreen(true);
         primaryStage.show();
