@@ -126,12 +126,13 @@ public class View3 {
         nextQuestionBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                
-                //lösche Elemente aus Boxen -> Clear oder remove sind die Zauberwörter !!!
-                questionBox.getChildren().remove(questionLabel);
+                // lösche Elemente aus Boxen -> clear() löscht alle Elemente
+                // aus den Boxen, mit remove(element,element) kann man gezielt 
+                // Elemente aus den Boxen löschen
+                questionBox.getChildren().clear();
                 answersBox.getChildren().clear();
                 myCard = cardBox.nextCard(cardBox.getCards().indexOf(myCard));
-                lblQuestionNumber.setText("" + cardBox.getCards().indexOf(myCard));
+                lblQuestionNumber.setText("" + (cardBox.getCards().indexOf(myCard) +1));
                 
                 // setze den neuen Text in das Label 
                 questionLabel.setText(myCard.getQuestion().getText());
@@ -156,6 +157,37 @@ public class View3 {
         
         Button prevQuestionBtn = new Button("Zurück");
         prevQuestionBtn.setMinWidth(60);
+        prevQuestionBtn.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                 // lösche Elemente aus Boxen -> clear() löscht alle Elemente
+                // aus den Boxen, mit remove(element,element) kann man gezielt 
+                // Elemente aus den Boxen löschen
+                questionBox.getChildren().clear();
+                answersBox.getChildren().clear();
+                myCard = cardBox.prevCard(cardBox.getCards().indexOf(myCard));
+                lblQuestionNumber.setText("" + (cardBox.getCards().indexOf(myCard)));
+                
+                // setze den neuen Text in das Label 
+                questionLabel.setText(myCard.getQuestion().getText());
+                // füge Neues Label wieder zur questionBox hinzu
+                questionBox.getChildren().add(questionLabel);
+                
+                // erstelle neue Antwortbox
+                answersBox = new VBox();
+                checkboxWithAnswerBox = new HBox();
+                checkboxWithAnswerBox.setAlignment(Pos.CENTER);
+               
+                for (int i = 0; i < myCard.getAnswers().size(); i++) {
+                    CheckBox cb = new CheckBox();
+                    answerLabel = new Label(myCard.getAnswers().get(i).getText());
+                    checkboxWithAnswerBox = new HBox(cb, answerLabel);
+                    answersBox.getChildren().add(checkboxWithAnswerBox);
+                    answersBox.setSpacing(20);
+                }
+                scrollPaneContent.getChildren().add(answersBox);
+            }
+        });
 
         statusBar.getChildren().addAll(prevQuestionBtn, lblQuestionNumber, seperateSign, totalNumberOfQuestions, nextQuestionBtn);
         return statusBar;

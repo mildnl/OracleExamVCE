@@ -71,10 +71,14 @@ public class CardBox {
         return cardsi;
 
     }
-//######################sani was here#####################################################
+//######################sani was here, paul 2#####################################################
     
     public Card nextCard(int cardBoxIndex) {
-        return this.cards.get(cardBoxIndex+1);
+        return this.cards.get(cardBoxIndex +1);
+    }
+    
+    public Card prevCard(int cardBoxIndex) {
+        return this.cards.get(cardBoxIndex -1);
     }
     
     
