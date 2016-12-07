@@ -1,5 +1,6 @@
 package de.bbq.rh.ocase7;
 
+import de.bbq.rh.ocase7.card.Answer;
 import de.bbq.rh.ocase7.card.Card;
 import de.bbq.rh.ocase7.card.Cardbox;
 import de.bbq.rh.ocase7.card.Category;
@@ -29,26 +30,62 @@ public class Ocase7 {
     }
     
     public ArrayList<Category> getCompleteCategoriesList(Cardbox c) {
+        for (Category category : c.getCardBox().get(0).getCat().getAllList()) {
+            System.out.println(category.toString());
+        }
         return c.getCardBox().get(0).getCat().getAllList();
     }
     
-    public Card getCardByID(Cardbox c, int id) {
-        return c.getCardBox().set(0,c.getCardBox().get(0).getById(c.getCardBox().get(0),id));
+    public Cardbox getCardboxByQuestionID(Cardbox c, int id) {
+        c.getCardBox().set(0, c.getCardBox().set(0,c.getCardBox().get(0).getById(c.getCardBox().get(0),id)));
+        return c;
     }
     
-    public void printQuestionByCardbox(Cardbox c) {
-        for (Card i : c.getCardBox()) {
+    public void printQuestionByCardbox(Cardbox c, Scanner scn, Ocase7 o) {
+        Answer a = new Answer();
+        System.out.println("Cardbox size is " + c.getCardBox().size());
+        System.out.println("Start = true");
+        boolean continueToNextQuestion = scn.nextBoolean();
+        do {
+            for (Card i : c.getCardBox()) {
                 System.out.println("--------------------------------");
                 System.out.println(i.getId());
                 System.out.println("--------------------------------");
                 System.out.println(i.getQuestion());
                 System.out.println("--------------------------------");
-                i.getAnswerList().forEach((a) -> {  
-                    a.getAnswersByQuestion(i.getId()).forEach((b) -> {                  
-                        System.out.println(b.getText());
-                });
-            });
+                o.printAnswersByQuestion(a, i);
+                System.out.println("--------------------------------");
+            }
+            System.out.println("Continue = true");
+            continueToNextQuestion = scn.nextBoolean();
+        } while (continueToNextQuestion);
+    }
+    
+    public void printAnswersByQuestion(Answer a, Card i) {
+        ArrayList<Answer> answerList = new ArrayList<>();
+                answerList.addAll(a.getAnswersByQuestion(i.getId()));
+                System.out.println("answerList size is " + answerList.size());
+                for (Answer answer : answerList) {
+                    System.out.println(answer.getText());
+                }
+    }
+    
+    public Cardbox getQuestionsByCategoryID(Cardbox c, int categoryID , Category k) {
+        ArrayList<Card> categoryQuestionCards = new ArrayList<>();
+        
+        ArrayList<Integer> questionList = new ArrayList<>();
+        questionList.addAll(k.getQuestionIDListByCategoryID(categoryID));
+        for (Integer i : questionList) {
+            Card currentCard = c.getCardBox().get(0).getById(c.getCardBox().get(0), i);
+            categoryQuestionCards.add(currentCard); 
         }
+        c.getCardBox().clear();
+        c.getCardBox().addAll(categoryQuestionCards);
+        return c;
+    }
+    
+    public void getAnswersByQuestionID() {
+        
     }
         
 
@@ -57,13 +94,18 @@ public class Ocase7 {
         MySQLConnection mySQLDB = new MySQLConnection();
         Cardbox cardBox = new Cardbox();
         Scanner scn = new Scanner(System.in);
+        ArrayList<Category> categoryList = o.getCompleteCategoriesList(cardBox); 
+        System.out.println("Which Category ID?");
+        int categoryID = scn.nextInt();
+        cardBox = o.getQuestionsByCategoryID(cardBox, categoryID, categoryList.get(0));
+        o.printQuestionByCardbox(cardBox, scn, o);
         
-        int index = 1;
+//        o.getCardboxByQuestionID(cardBox, index);
         
         
-        while (index < cardBox.getCardBox().size()) {
-            
-        }  
+//        while (index < cardBox.getCardBox().size()) {
+//            
+//        }  
         o.end(scn);
     } 
 }

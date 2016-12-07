@@ -91,13 +91,14 @@ public class Category implements IMySQLDatabaseDAO {
         return categroyName;
     }
     
-    public int getQuestionID2CategoryID(int questionID) {
+    public int getCategoryIDByQuestionID(int questionID) {
         int categoryID = 0;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM category2question WHERE question_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.pst.setInt(1, questionID);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
                 categoryID = MySQLConnection.rst.getInt("category_id");
             }         
@@ -106,6 +107,24 @@ public class Category implements IMySQLDatabaseDAO {
             System.out.println(e.getMessage());
         }
         return categoryID;
+    }
+    
+    public ArrayList<Integer> getQuestionIDListByCategoryID(int categoryID) {
+        ArrayList<Integer> questionIDList = new ArrayList<>();
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM category2question WHERE category_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, categoryID);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                questionIDList.add(MySQLConnection.rst.getInt("question_id"));
+            }         
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return questionIDList;
     }
     
     @Override

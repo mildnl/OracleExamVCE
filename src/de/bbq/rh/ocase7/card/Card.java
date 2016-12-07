@@ -55,17 +55,21 @@ public class Card implements IMySQLDatabaseDAO {
     }
     
     public Card(int id, String question) {
-        this.cat = new Category();
+        this.cat = this.constructByQuestionID(this, id).cat;
         this.id = id;
         this.question = question;
-        this.answerList = new ArrayList<>();
+        this.answerList = this.constructByQuestionID(this, id).getAnswerList();
+    }
+    
+    public Card(int id) {
+        this.cat = this.constructByQuestionID(this, id).cat;
+        this.id = id;
+        this.question = this.constructByQuestionID(this, id).getQuestion();
+        this.answerList = this.constructByQuestionID(this, id).getAnswerList();
     }
     
     public Card() {
-        this.cat = new Category();
-        this.id = 0;
-        this.question = "defaultQuestion";
-        this.answerList = new ArrayList<>();
+        this(1);
     }
 
     @Override
@@ -81,7 +85,7 @@ public class Card implements IMySQLDatabaseDAO {
                 c.setId(MySQLConnection.rst.getInt("id"));
                 c.setQuestion(MySQLConnection.rst.getString("text"));  
             } 
-            c.cat.setId(c.cat.getQuestionID2CategoryID(c.getId()));
+            c.cat.setId(c.cat.getCategoryIDByQuestionID(c.getId()));
             c.cat.setName(c.cat.getCategoryNameByCategoryID(c.cat.getId()));
             Answer a = new Answer();
             a = (Answer) a.getById(a, id);
@@ -92,6 +96,32 @@ public class Card implements IMySQLDatabaseDAO {
             System.out.println(e.getMessage());
         }
         return (E) c;
+    }
+    
+    private Card constructByQuestionID(Card c, int id) {
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM question WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                c.setId(MySQLConnection.rst.getInt("id"));
+                c.setQuestion(MySQLConnection.rst.getString("text"));  
+            } 
+            c.cat = new Category();
+            c.cat.setId(c.cat.getCategoryIDByQuestionID(c.getId()));
+            c.cat.setName(c.cat.getCategoryNameByCategoryID(c.cat.getId()));
+            Answer a = new Answer();
+            a = (Answer) a.getById(a, id);
+            c.answerList = new ArrayList<>();
+            c.answerList.add(a);
+
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return c;
     }
 
     @Override
