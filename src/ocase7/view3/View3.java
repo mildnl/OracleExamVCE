@@ -53,23 +53,29 @@ public class View3 {
         Group view3Root = new Group();
         Scene view3Scene = new Scene(view3Root, Color.DEEPSKYBLUE);
 
-
         myCard = cardBox.getCards().get(0);
         
         //Erstelle Boxen für Layout        
         VBox view3ContentBox = new VBox();
+        view3ContentBox.setMinWidth(660);
         //view3ContentBox.
         HBox statusBar = createHboxForTop();
         HBox buttonBar = createHBoxForDown();
         ScrollPane answerAndQuestionScrollPane = new ScrollPane();
+        answerAndQuestionScrollPane.setMinWidth(660);
         answerAndQuestionScrollPane.setMinHeight(700);
+        answerAndQuestionScrollPane.setMaxHeight(700);
+        answerAndQuestionScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scrollPaneContent = new VBox();
         scrollPaneContent.setMinHeight(600);
+        scrollPaneContent.setMinWidth(658);
+        
 
         // setze Mindestbreite und den Border für die Fragenbox
         setMinWidthAndStyleOnQuestionBox();
+        
         questionLabel = new Label(myCard.getQuestion().getText());
-
+        //questionLabel.setPrefWidth(700);
         // erstelle Checkboxen mit der Anzahl an Antwortmöglichkeiten
         answersBox = new VBox();
         checkboxWithAnswerBox = new HBox();
@@ -85,6 +91,7 @@ public class View3 {
 
         //fülle Boxen mit ihren Elementen
         questionBox.getChildren().add(questionLabel);
+        questionBox.setFillWidth(true);
         scrollPaneContent.getChildren().addAll(questionBox, answersBox);
         answerAndQuestionScrollPane.setContent(scrollPaneContent);
         view3ContentBox.getChildren().addAll(statusBar, answerAndQuestionScrollPane, buttonBar);

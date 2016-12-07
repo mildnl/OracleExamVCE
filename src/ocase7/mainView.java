@@ -22,7 +22,9 @@ public class mainView extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Ocase 7");
         primaryStage.setMinHeight(800);
-        primaryStage.setMinWidth(600);
+//        primaryStage.setMaxHeight(800);
+        primaryStage.setMinWidth(660);
+//        primaryStage.setMaxWidth(600);
         View3 view3 = new View3();
         Scene view3Scene =  view3.createView3();
         LaunchView launchView = new LaunchView();
