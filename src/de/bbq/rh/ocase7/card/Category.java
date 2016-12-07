@@ -119,9 +119,6 @@ public class Category implements IMySQLDatabaseDAO {
             while (MySQLConnection.rst.next()) {
                 c.add(new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
             }
-            c.forEach((i) -> {
-                System.out.println(i.toString());
-            });
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());

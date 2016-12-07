@@ -28,6 +28,23 @@ public class Cardbox implements IMySQLDatabaseDAO {
         this.cardBox = new ArrayList<>();
         this.cardBox.add(new Card());
     }
+    
+    public <E> E getCardboxByCategoryID(E elem, int id) {
+        Cardbox c = (Cardbox) elem;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM question";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                c.cardBox.add(new Card(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return (E) c;
+    }
 
     @Override
     public <E> E getById(E elem, int id) {
