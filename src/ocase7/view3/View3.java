@@ -39,11 +39,12 @@ public class View3 {
     Label questionLabel;
     Label answerLabel;
     HBox checkboxWithAnswerBox;
-
+    Label lblQuestionNumber;
+    
     private void fillCategories() {
         categories.add(Category.getCategoryById(1));
         cardBox = new CardBox(categories);
-        //System.out.println(cardBox.getCards() + "########" + cardBox.getNumberOfCards());
+        System.out.println(cardBox.getCards() + "########" + cardBox.getNumberOfCards());
 
     }
 
@@ -51,11 +52,10 @@ public class View3 {
         fillCategories();
         Group view3Root = new Group();
         Scene view3Scene = new Scene(view3Root, Color.DEEPSKYBLUE);
-//        Category categoryById = Category.getCategoryById(2);
-//        myCard = Card.getCardsByCategory(categoryById);
+
 
         myCard = cardBox.getCards().get(0);
-        //System.out.println(cardBox.getCards().size());
+        
         //Erstelle Boxen für Layout        
         VBox view3ContentBox = new VBox();
         //view3ContentBox.
@@ -68,7 +68,7 @@ public class View3 {
 
         // setze Mindestbreite und den Border für die Fragenbox
         setMinWidthAndStyleOnQuestionBox();
-        questionLabel = new Label(cardBox.getCards().get(4).getQuestion().getText());
+        questionLabel = new Label(myCard.getQuestion().getText());
 
         // erstelle Checkboxen mit der Anzahl an Antwortmöglichkeiten
         answersBox = new VBox();
@@ -110,8 +110,8 @@ public class View3 {
         statusBar.setStyle("-fx-border-style: solid;"
                 + "-fx-border-width: 1;"
                 + "-fx-border-color: grey;");
-        String questionNumber = "" + cardBox.getCards().get(0).getId();
-        Label lblQuestionNumber = new Label(questionNumber);
+        String questionNumber = "" + (cardBox.getCards().indexOf(myCard)+1);
+        lblQuestionNumber = new Label(questionNumber);
         lblQuestionNumber.setFont(Font.font("Arial", 18));
 
         Label seperateSign = new Label(" / ");
@@ -130,10 +130,11 @@ public class View3 {
                 //lösche Elemente aus Boxen -> Clear oder remove sind die Zauberwörter !!!
                 questionBox.getChildren().remove(questionLabel);
                 answersBox.getChildren().clear();
+                myCard = cardBox.nextCard(cardBox.getCards().indexOf(myCard));
+                lblQuestionNumber.setText("" + cardBox.getCards().indexOf(myCard));
                 
                 // setze den neuen Text in das Label 
-                questionLabel.setText(cardBox.getCards().get(1).getQuestion().getText());
-                //System.out.println(cardBox.getCards().get(1));
+                questionLabel.setText(myCard.getQuestion().getText());
                 // füge Neues Label wieder zur questionBox hinzu
                 questionBox.getChildren().add(questionLabel);
                 
@@ -141,22 +142,15 @@ public class View3 {
                 answersBox = new VBox();
                 checkboxWithAnswerBox = new HBox();
                 checkboxWithAnswerBox.setAlignment(Pos.CENTER);
-                //System.out.println(cardBox.getCards().get(1));
-                
-                
-                //############ Hier steckt der Bug drin ###############
-                //############ Es werden nur 5 Answers ausgelesen obwohl 7 erwartet werden ###############
-                
-                System.out.println(cardBox.getCards().get(4).getAnswers().size());
+               
                 for (int i = 0; i < myCard.getAnswers().size(); i++) {
                     CheckBox cb = new CheckBox();
-                    answerLabel = new Label(cardBox.getCards().get(1).getAnswers().get(i).getText());
+                    answerLabel = new Label(myCard.getAnswers().get(i).getText());
                     checkboxWithAnswerBox = new HBox(cb, answerLabel);
                     answersBox.getChildren().add(checkboxWithAnswerBox);
                     answersBox.setSpacing(20);
                 }
                 scrollPaneContent.getChildren().add(answersBox);
-                //############ ######################### ###############
             }
         });
         

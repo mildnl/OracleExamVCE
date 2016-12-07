@@ -73,8 +73,8 @@ public class CardBox {
     }
 //######################sani was here#####################################################
     
-    public Card nextCard(int id) {
-        return this.cards.get(id+1);
+    public Card nextCard(int cardBoxIndex) {
+        return this.cards.get(cardBoxIndex+1);
     }
     
     
