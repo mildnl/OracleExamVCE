@@ -1,28 +1,23 @@
 package ocase7.view3;
 
-import com.sun.javafx.scene.control.skin.DatePickerContent;
 import java.util.ArrayList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import ocase7.Card;
 import ocase7.CardBox;
 import ocase7.Category;
-import ocase7.Question;
 
 /**
  *
@@ -42,8 +37,10 @@ public class View3 {
     Label questionNumberLabel;
     String questionNumber;
     
+    
+    
     private void fillCategories() {
-        categories.add(Category.getCategoryById(1));
+        categories.add(Category.getCategoryById(2));  //<-------------------------------------- GIB EINE KATEGORIE EIN
         cardBox = new CardBox(categories);
         //System.out.println(cardBox.getCards() + "########" + cardBox.getNumberOfCards());
 
@@ -83,6 +80,12 @@ public class View3 {
         checkboxWithAnswerBox.setAlignment(Pos.CENTER);
         for (int i = 0; i < myCard.getAnswers().size(); i++) {
             CheckBox cb = new CheckBox();
+            cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    
+                }
+            });
             answerLabel = new Label(myCard.getAnswers().get(i).getText());
             checkboxWithAnswerBox = new HBox(cb, answerLabel);
             answersBox.getChildren().add(checkboxWithAnswerBox);
@@ -130,7 +133,9 @@ public class View3 {
 
         Button nextQuestionBtn = new Button("Vor");
         nextQuestionBtn.setMinWidth(60);
+        
         nextQuestionBtn.setOnAction(new EventHandler<ActionEvent>() {
+            
             @Override
             public void handle(ActionEvent event) {
                 // lösche Elemente aus Boxen -> clear() löscht alle Elemente
