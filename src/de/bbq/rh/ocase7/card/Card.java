@@ -54,18 +54,26 @@ public class Card implements IMySQLDatabaseDAO {
         this.answerList = answerList;
     }
     
-    public Card(int id, String question) {
-        this.cat = this.constructByQuestionID(this, id).cat;
-        this.id = id;
-        this.question = question;
-        this.answerList = this.constructByQuestionID(this, id).getAnswerList();
-    }
-    
     public Card(int id) {
-        this.cat = this.constructByQuestionID(this, id).cat;
-        this.id = id;
-        this.question = this.constructByQuestionID(this, id).getQuestion();
-        this.answerList = this.constructByQuestionID(this, id).getAnswerList();
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM question WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                this.id = MySQLConnection.rst.getInt("id");
+                this.question = MySQLConnection.rst.getString("text");  
+            } 
+            this.cat = new Category();
+            Answer a = new Answer(id);
+            this.answerList = new ArrayList<>();
+            this.answerList.add(a);
+
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
     }
     
     public Card() {
@@ -87,7 +95,7 @@ public class Card implements IMySQLDatabaseDAO {
             } 
             c.cat.setId(c.cat.getCategoryIDByQuestionID(c.getId()));
             c.cat.setName(c.cat.getCategoryNameByCategoryID(c.cat.getId()));
-            Answer a = new Answer();
+            Answer a = new Answer(c.getId());
             a = (Answer) a.getById(a, id);
             c.answerList.add(a);
 
@@ -112,7 +120,7 @@ public class Card implements IMySQLDatabaseDAO {
             c.cat = new Category();
             c.cat.setId(c.cat.getCategoryIDByQuestionID(c.getId()));
             c.cat.setName(c.cat.getCategoryNameByCategoryID(c.cat.getId()));
-            Answer a = new Answer();
+            Answer a = new Answer(c.getId());
             a = (Answer) a.getById(a, id);
             c.answerList = new ArrayList<>();
             c.answerList.add(a);
@@ -133,7 +141,7 @@ public class Card implements IMySQLDatabaseDAO {
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.add(new Card(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
+                c.add(new Card(MySQLConnection.rst.getInt("id")));
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);

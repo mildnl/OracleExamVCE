@@ -37,7 +37,7 @@ public class Cardbox implements IMySQLDatabaseDAO {
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.cardBox.add(new Card(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
+                c.cardBox.add(new Card(MySQLConnection.rst.getInt("id")));
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
@@ -60,7 +60,7 @@ public class Cardbox implements IMySQLDatabaseDAO {
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.add(new Card(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
+                c.add(new Card(MySQLConnection.rst.getInt("id")));
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);

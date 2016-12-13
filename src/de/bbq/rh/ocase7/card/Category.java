@@ -39,14 +39,25 @@ public class Category implements IMySQLDatabaseDAO {
         this.name = name;
     }
     
-    public Category(String name) {
-        this.id = 0;
-        this.name = name;
+    public Category(int id) {
+        this.id = id;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM category WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                this.name = MySQLConnection.rst.getString("text");
+            }         
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
     }
     
     public Category() {
-        this.id = 0;
-        this.name = "default category";
+        this(4);
     }
 
     @Override

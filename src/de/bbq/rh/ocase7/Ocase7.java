@@ -5,13 +5,19 @@ import de.bbq.rh.ocase7.card.Card;
 import de.bbq.rh.ocase7.card.Cardbox;
 import de.bbq.rh.ocase7.card.Category;
 import de.bbq.rh.ocase7.database.MySQLConnection;
+import java.awt.Insets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 
-public class Ocase7 {
+public class Ocase7 extends Application {
     
     public void end(Scanner scn) {
         try {
@@ -42,18 +48,17 @@ public class Ocase7 {
     }
     
     public void printQuestionByCardbox(Cardbox c, Scanner scn, Ocase7 o) {
-        Answer a = new Answer();
         System.out.println("Cardbox size is " + c.getCardBox().size());
         System.out.println("Start = true");
         boolean continueToNextQuestion = scn.nextBoolean();
         do {
-            for (Card i : c.getCardBox()) {
+            for (int i = 0; i < c.getCardBox().size(); i++) {
                 System.out.println("--------------------------------");
-                System.out.println(i.getId());
+                System.out.println(c.getCardBox().get(i).getId());
                 System.out.println("--------------------------------");
-                System.out.println(i.getQuestion());
+                System.out.println(c.getCardBox().get(i).getQuestion());
                 System.out.println("--------------------------------");
-                o.printAnswersByQuestion(a, i);
+                o.printAnswersByQuestion(c.getCardBox().get(i).getAnswerList().get(i), c.getCardBox().get(i));
                 System.out.println("--------------------------------");
             }
             System.out.println("Continue = true");
@@ -61,12 +66,12 @@ public class Ocase7 {
         } while (continueToNextQuestion);
     }
     
-    public void printAnswersByQuestion(Answer a, Card i) {
-        ArrayList<Answer> answerList = new ArrayList<>();
-                answerList.addAll(a.getAnswersByQuestion(i.getId()));
+    public void printAnswersByQuestion(Answer a, Card c) {
+        ArrayList<String> answerList = new ArrayList<>();
+                answerList.addAll(a.getText());
                 System.out.println("answerList size is " + answerList.size());
-                for (Answer answer : answerList) {
-                    System.out.println(answer.getText());
+                for (String answer : answerList) {
+                    System.out.println(answer);
                 }
     }
     
@@ -108,4 +113,20 @@ public class Ocase7 {
 //        }  
         o.end(scn);
     } 
+
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("JavaFX Welcome");
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        Scene scene = new Scene(grid, 300, 275);
+        primaryStage.show();
+        
+        
+        primaryStage.setScene(scene);
+    }
 }
