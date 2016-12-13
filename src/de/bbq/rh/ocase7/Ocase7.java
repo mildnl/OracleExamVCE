@@ -5,19 +5,13 @@ import de.bbq.rh.ocase7.card.Card;
 import de.bbq.rh.ocase7.card.Cardbox;
 import de.bbq.rh.ocase7.card.Category;
 import de.bbq.rh.ocase7.database.MySQLConnection;
-import java.awt.Insets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 
-public class Ocase7 extends Application {
+public class Ocase7 {
     
     public void end(Scanner scn) {
         try {
@@ -113,20 +107,4 @@ public class Ocase7 extends Application {
 //        }  
         o.end(scn);
     } 
-
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("JavaFX Welcome");
-        GridPane grid = new GridPane();
-        grid.setAlignment(Pos.CENTER);
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(25, 25, 25, 25));
-
-        Scene scene = new Scene(grid, 300, 275);
-        primaryStage.show();
-        
-        
-        primaryStage.setScene(scene);
-    }
 }
