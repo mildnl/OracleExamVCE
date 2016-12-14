@@ -4,6 +4,7 @@ import de.bbq.rh.ocase7.Test;
 import de.bbq.rh.ocase7.database.IMySQLDatabaseDAO;
 import de.bbq.rh.ocase7.database.MySQLConnection;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -37,9 +38,10 @@ public class Cardbox implements IMySQLDatabaseDAO {
             String sql = "SELECT question_id FROM category2question WHERE category_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.pst.setInt(1, id);
-            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
-            while (MySQLConnection.rst.next()) {
-                c.getCardList().add(new Card(MySQLConnection.rst.getInt("question_id")));
+            ResultSet resultset = null;
+            resultset = MySQLConnection.pst.executeQuery();
+            while (resultset.next()) {
+                c.getCardList().add(new Card(resultset.getInt("question_id")));
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
