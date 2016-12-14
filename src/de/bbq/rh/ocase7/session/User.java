@@ -10,6 +10,6 @@ package de.bbq.rh.ocase7.session;
  *
  * @author $ Lyn Mildner
  */
-public class session {
+public class User {
 
 }

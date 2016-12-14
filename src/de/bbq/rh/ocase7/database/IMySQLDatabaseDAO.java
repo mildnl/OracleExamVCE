@@ -12,13 +12,13 @@ public interface IMySQLDatabaseDAO {
 //    String USER = "Petra";
 //    String PASSWORD = "Panke";
     
-    String URL = "jdbc:mysql://178.162.194.27:3306/lmildner_OCP6";
-    String USER = "lmildner_Lyn";
-    String PASSWORD = "z2o2an$43,WF";
+//    String URL = "jdbc:mysql://178.162.194.27:3306/lmildner_OCP6";
+//    String USER = "lmildner_Lyn";
+//    String PASSWORD = "z2o2an$43,WF";
 
-//    String URL = "jdbc:mysql://localhost:3306/lmildner_OCP6";
-//    String USER = "user1";
-//    String PASSWORD = "newpass";
+    String URL = "jdbc:mysql://localhost:3306/lmildner_OCP6";
+    String USER = "user1";
+    String PASSWORD = "newpass";
     
     public <E extends Object> E getById(E elem, int id);
     
