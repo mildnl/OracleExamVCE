@@ -5,6 +5,8 @@ import de.bbq.rh.ocase7.card.Card;
 import de.bbq.rh.ocase7.card.Cardbox;
 import de.bbq.rh.ocase7.card.Category;
 import de.bbq.rh.ocase7.database.MySQLConnection;
+import de.bbq.rh.ocase7.session.Session;
+import de.bbq.rh.ocase7.session.User;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -71,8 +73,14 @@ public class Ocase7 {
 
     public static void main(String[] args) {
         Ocase7 o = new Ocase7();
+        User u = new User();
+        Session s = new Session(u);
+        System.out.println("");
+        System.out.println("sessionID: " + s.getId());
+        System.out.println("Name: " + s.getUser().getName());
+        System.out.println("");
 
-        Cardbox cardbox = new Cardbox();
+        Cardbox cardbox = s.getSessionBox();
         Card card = cardbox.getCardList().get(0);
         Category category = cardbox.getCardList().get(0).getCat();
 
@@ -82,7 +90,8 @@ public class Ocase7 {
         System.out.println("Which Category ID?");
         int categoryID = scn.nextInt();
 
-        cardbox = (Cardbox) cardbox.getCardboxByCategoryID(cardbox, categoryID);
+        s.setSessionBox((Cardbox) cardbox.getCardboxByCategoryID(cardbox, categoryID));
+        cardbox = s.getSessionBox();
         o.printQuestionByCardbox(cardbox, scn, o);
 
         o.end(scn);
