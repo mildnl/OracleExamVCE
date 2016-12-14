@@ -6,7 +6,6 @@ import de.bbq.rh.ocase7.card.Cardbox;
 import de.bbq.rh.ocase7.card.Category;
 import de.bbq.rh.ocase7.database.MySQLConnection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,82 +28,60 @@ public class Ocase7 {
         }
     }
     
-    public ArrayList<Category> getCompleteCategoriesList(Cardbox c) {
-        for (Category category : c.getCardBox().get(0).getCat().getAllList()) {
+    public void printCategoriesList(Category c) {
+        for (Category category : c.getAllList()) {
             System.out.println(category.toString());
         }
-        return c.getCardBox().get(0).getCat().getAllList();
     }
     
     public Cardbox getCardboxByQuestionID(Cardbox c, int id) {
-        c.getCardBox().set(0, c.getCardBox().set(0,c.getCardBox().get(0).getById(c.getCardBox().get(0),id)));
+        c.getCardList().set(0, c.getCardList().set(0,c.getCardList().get(0).getById(c.getCardList().get(0),id)));
         return c;
     }
     
     public void printQuestionByCardbox(Cardbox c, Scanner scn, Ocase7 o) {
-        System.out.println("Cardbox size is " + c.getCardBox().size());
+        System.out.println("Cardbox size is " + c.getCardList().size());
         System.out.println("Start = true");
         boolean continueToNextQuestion = scn.nextBoolean();
-        do {
-            for (int i = 0; i < c.getCardBox().size(); i++) {
+        while (continueToNextQuestion) {
+            for (int i = 0; i < c.getCardList().size(); i++) {
                 System.out.println("--------------------------------");
-                System.out.println(c.getCardBox().get(i).getId());
+                System.out.println(c.getCardList().get(i).getId());
                 System.out.println("--------------------------------");
-                System.out.println(c.getCardBox().get(i).getQuestion());
+                System.out.println(c.getCardList().get(i).getQuestion());
                 System.out.println("--------------------------------");
-                o.printAnswersByQuestion(c.getCardBox().get(i).getAnswerList().get(i), c.getCardBox().get(i));
+                o.printAnswersByQuestion(c.getCardList().get(i).getAnswer());
                 System.out.println("--------------------------------");
             }
             System.out.println("Continue = true");
             continueToNextQuestion = scn.nextBoolean();
-        } while (continueToNextQuestion);
+        } 
     }
     
-    public void printAnswersByQuestion(Answer a, Card c) {
-        ArrayList<String> answerList = new ArrayList<>();
-                answerList.addAll(a.getText());
-                System.out.println("answerList size is " + answerList.size());
-                for (String answer : answerList) {
-                    System.out.println(answer);
+    public void printAnswersByQuestion(Answer answer) {   
+                for (String a : answer.getTextList()) {
+                    System.out.println(a);
                 }
-    }
-    
-    public Cardbox getQuestionsByCategoryID(Cardbox c, int categoryID , Category k) {
-        ArrayList<Card> categoryQuestionCards = new ArrayList<>();
-        
-        ArrayList<Integer> questionList = new ArrayList<>();
-        questionList.addAll(k.getQuestionIDListByCategoryID(categoryID));
-        for (Integer i : questionList) {
-            Card currentCard = c.getCardBox().get(0).getById(c.getCardBox().get(0), i);
-            categoryQuestionCards.add(currentCard); 
-        }
-        c.getCardBox().clear();
-        c.getCardBox().addAll(categoryQuestionCards);
-        return c;
-    }
-    
-    public void getAnswersByQuestionID() {
-        
     }
         
 
     public static void main(String[] args) {
         Ocase7 o = new Ocase7();
-        MySQLConnection mySQLDB = new MySQLConnection();
-        Cardbox cardBox = new Cardbox();
+        
+        Cardbox cardbox = new Cardbox();
+        Card card = cardbox.getCardList().get(0);
+        Category category = cardbox.getCardList().get(0).getCat();
+        
+        o.printCategoriesList(category);
+        
         Scanner scn = new Scanner(System.in);
-        ArrayList<Category> categoryList = o.getCompleteCategoriesList(cardBox); 
         System.out.println("Which Category ID?");
         int categoryID = scn.nextInt();
-        cardBox = o.getQuestionsByCategoryID(cardBox, categoryID, categoryList.get(0));
-        o.printQuestionByCardbox(cardBox, scn, o);
         
-//        o.getCardboxByQuestionID(cardBox, index);
+        cardbox = (Cardbox) cardbox.getCardboxByCategoryID(cardbox, categoryID);
+        o.printQuestionByCardbox(cardbox, scn, o);
         
-        
-//        while (index < cardBox.getCardBox().size()) {
-//            
-//        }  
+ 
         o.end(scn);
     } 
 }

@@ -14,30 +14,32 @@ import java.util.logging.Logger;
  * @author $ Lyn Mildner
  */
 public class Cardbox implements IMySQLDatabaseDAO {
-    private ArrayList<Card> cardBox;
+    private ArrayList<Card> cardList;
 
-    public ArrayList<Card> getCardBox() {
-        return cardBox;
+    public ArrayList<Card> getCardList() {
+        return cardList;
     }
 
-    public void setCardBox(ArrayList<Card> cardBox) {
-        this.cardBox = cardBox;
+    public void setCardList(ArrayList<Card> cardList) {
+        this.cardList = cardList;
     }
     
     public Cardbox() {
-        this.cardBox = new ArrayList<>();
-        this.cardBox.add(new Card());
+        this.cardList = new ArrayList<>();
+        this.cardList.add(new Card());
     }
     
     public <E> E getCardboxByCategoryID(E elem, int id) {
         Cardbox c = (Cardbox) elem;
+        c.getCardList().clear();
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM question";
+            String sql = "SELECT question_id FROM category2question WHERE category_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.cardBox.add(new Card(MySQLConnection.rst.getInt("id")));
+                c.getCardList().add(new Card(MySQLConnection.rst.getInt("question_id")));
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);

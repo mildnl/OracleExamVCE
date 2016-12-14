@@ -17,7 +17,7 @@ public class Card implements IMySQLDatabaseDAO {
     private Category cat;
     private int id;
     private String question;
-    private ArrayList<Answer> answerList;
+    private Answer answer;
 
     public Category getCat() {
         return this.cat;
@@ -43,37 +43,15 @@ public class Card implements IMySQLDatabaseDAO {
         this.question = question;
     }
 
-    public ArrayList<Answer> getAnswerList() {
-        return answerList;
-    }
-
-    public Card(Category cat, int id, String question, ArrayList<Answer> answerList) {
-        this.cat = cat;
-        this.id = id;
-        this.question = question;
-        this.answerList = answerList;
+    public Answer getAnswer() {
+        return answer;
     }
     
     public Card(int id) {
-        try {
-            Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM question WHERE id = ?";
-            MySQLConnection.pst = con.prepareStatement(sql);
-            MySQLConnection.pst.setInt(1, id);
-            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
-            while (MySQLConnection.rst.next()) {
-                this.id = MySQLConnection.rst.getInt("id");
-                this.question = MySQLConnection.rst.getString("text");  
-            } 
-            this.cat = new Category();
-            Answer a = new Answer(id);
-            this.answerList = new ArrayList<>();
-            this.answerList.add(a);
-
-        } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
-            System.out.println(e.getMessage());
-        }
+        this.cat = new Category(categoryIDByQuestionID(id));
+        this.id = id;
+        this.question = questionTextByQuestionID(id);
+        this.answer = new Answer(id);
     }
     
     public Card() {
@@ -96,8 +74,7 @@ public class Card implements IMySQLDatabaseDAO {
             c.cat.setId(c.cat.getCategoryIDByQuestionID(c.getId()));
             c.cat.setName(c.cat.getCategoryNameByCategoryID(c.cat.getId()));
             Answer a = new Answer(c.getId());
-            a = (Answer) a.getById(a, id);
-            c.answerList.add(a);
+            c.answer = (Answer) a.getById(a, id);
 
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
@@ -106,30 +83,42 @@ public class Card implements IMySQLDatabaseDAO {
         return (E) c;
     }
     
-    private Card constructByQuestionID(Card c, int id) {
+    private int categoryIDByQuestionID(int id) {
+        int categoryID = 0;
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM question WHERE id = ?";
+            String sql = "SELECT * FROM category2question WHERE question_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.pst.setInt(1, id);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                c.setId(MySQLConnection.rst.getInt("id"));
-                c.setQuestion(MySQLConnection.rst.getString("text"));  
+                categoryID = MySQLConnection.rst.getInt("category_id");  
             } 
-            c.cat = new Category();
-            c.cat.setId(c.cat.getCategoryIDByQuestionID(c.getId()));
-            c.cat.setName(c.cat.getCategoryNameByCategoryID(c.cat.getId()));
-            Answer a = new Answer(c.getId());
-            a = (Answer) a.getById(a, id);
-            c.answerList = new ArrayList<>();
-            c.answerList.add(a);
 
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
-        return c;
+        return categoryID;
+    }
+    
+    private String questionTextByQuestionID(int id) {
+        String questionText = "empty";
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT text FROM question WHERE id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                questionText = MySQLConnection.rst.getString("text");  
+            } 
+
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return questionText;
     }
 
     @Override

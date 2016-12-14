@@ -15,7 +15,7 @@ import java.util.logging.Logger;
  */
 public class Answer implements IMySQLDatabaseDAO {
     private int id;
-    private ArrayList<String> text;
+    private ArrayList<String> textList;
     private int question_id;
     private boolean isRight;
 
@@ -31,8 +31,8 @@ public class Answer implements IMySQLDatabaseDAO {
         this.isRight = isRight;
     }
 
-    public void setText(ArrayList<String> text) {
-        this.text = text;
+    public void setTextList(ArrayList<String> textList) {
+        this.textList = textList;
     }
 
     public int getId() {
@@ -47,13 +47,13 @@ public class Answer implements IMySQLDatabaseDAO {
         return this.isRight;
     }
 
-    public ArrayList<String> getText() {
-        return this.text;
+    public ArrayList<String> getTextList() {
+        return this.textList;
     }
 
     public Answer(int id, ArrayList<String> text, int question_id, int isRight) {
         this.id = id;
-        this.text = text;
+        this.textList = text;
         this.question_id = question_id;
         if (isRight == 1) {
                     this.setIsRight(true);
@@ -63,31 +63,33 @@ public class Answer implements IMySQLDatabaseDAO {
     }
     
     public Answer(int questionID) {
-        this.text = new ArrayList<>();
+        this.textList = new ArrayList<>(getAnswersByQuestionID(questionID));
         this.question_id = questionID;
+        this.id = getAnswerIDByQuestionID(questionID);
+        this.isRight = getIsRightByQuestionID(questionID);
+    }
+    
+    private boolean getIsRightByQuestionID(int questionID) {
+        boolean answerIsRight = false;
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM answer WHERE question_id = ?";
+            String sql = "SELECT isRight FROM answer WHERE question_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.pst.setInt(1, questionID);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                this.setId(MySQLConnection.rst.getInt("id"));
-                this.getText().add(MySQLConnection.rst.getString("text"));
                 if (MySQLConnection.rst.getInt("isRight") == 1) {
-                    this.setIsRight(true);
-                } else {
-                    this.setIsRight(false);
-                }
-                
+                    answerIsRight = true;
+                }            
             }
         } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
                 Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return answerIsRight;
     }
     
-    public ArrayList<String> getAnswersByQuestionID(int questionID) {
+    private ArrayList<String> getAnswersByQuestionID(int questionID) {
         ArrayList<String> answerList = new ArrayList<>();
         try {
             Connection con = MySQLConnection.getConnection();
@@ -104,6 +106,24 @@ public class Answer implements IMySQLDatabaseDAO {
         }
         return answerList;
     }
+    
+    private int getAnswerIDByQuestionID(int questionID) {
+        int answerID = 0;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT id FROM answer WHERE question_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, questionID);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                answerID = MySQLConnection.rst.getInt("id");           
+            }
+        } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return answerID;
+    }
 
     @Override
     public <E> E getById(E elem, int id) {
@@ -116,7 +136,7 @@ public class Answer implements IMySQLDatabaseDAO {
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
                 a.setId(MySQLConnection.rst.getInt("id")); 
-                a.getText().add(MySQLConnection.rst.getString("text"));
+                a.getTextList().add(MySQLConnection.rst.getString("text"));
                 a.setQuestion_id(MySQLConnection.rst.getInt("question_id"));
                 if (MySQLConnection.rst.getInt("isRight") == 1) {
                     a.setIsRight(true);

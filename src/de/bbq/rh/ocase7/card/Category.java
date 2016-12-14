@@ -41,23 +41,29 @@ public class Category implements IMySQLDatabaseDAO {
     
     public Category(int id) {
         this.id = id;
+        this.name = getTextByCategoryID(id); 
+   }
+    
+    public Category() {
+        this(4);
+    }
+    
+    private String getTextByCategoryID(int id) {
+        String categoryName = "empty";
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM category WHERE id = ?";
+            String sql = "SELECT text FROM category WHERE id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.pst.setInt(1, id);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                this.name = MySQLConnection.rst.getString("text");
+                categoryName = MySQLConnection.rst.getString("text");
             }         
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
-    }
-    
-    public Category() {
-        this(4);
+        return categoryName;
     }
 
     @Override
@@ -85,7 +91,7 @@ public class Category implements IMySQLDatabaseDAO {
     }
     
     public String getCategoryNameByCategoryID(int id) {
-        String categroyName = null;
+        String categoryName = null;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT text FROM category WHERE id = ?";
@@ -93,13 +99,13 @@ public class Category implements IMySQLDatabaseDAO {
             MySQLConnection.pst.setInt(1, id);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                categroyName = MySQLConnection.rst.getString("text");
+                categoryName = MySQLConnection.rst.getString("text");
             }         
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
-        return categroyName;
+        return categoryName;
     }
     
     public int getCategoryIDByQuestionID(int questionID) {
