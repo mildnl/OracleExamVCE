@@ -109,7 +109,7 @@ public class User {
         return userPassword;
     }
 
-    public void insertUserIDIntoDB(User u) {
+    public void insertUserAnswersIDIntoDB(User u) {
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "INSERT INTO lmildner_OCP6.`userAnswer` (`user_id`, `answer_id`) \n"

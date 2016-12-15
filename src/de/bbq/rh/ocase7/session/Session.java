@@ -24,17 +24,12 @@ import java.util.logging.Logger;
 public class Session implements IMySQLDatabaseDAO {
 
     private int id;
-//    private User user;
     private SimpleDateFormat begin;
     private Cardbox sessionBox;
 
     public int getId() {
         return this.id;
     }
-
-//    public User getUser() {
-//        return this.user;
-//    }
 
     public SimpleDateFormat getBegin() {
         return this.begin;
@@ -54,8 +49,7 @@ public class Session implements IMySQLDatabaseDAO {
 
     public Session(int userID) {
         insertSessionIDByUserID(userID);
-        this.id = userID;
-//        this.user = user;
+        this.id = fetchSessionIDByUserID(userID);
         this.begin = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
         this.sessionBox = new Cardbox();
 

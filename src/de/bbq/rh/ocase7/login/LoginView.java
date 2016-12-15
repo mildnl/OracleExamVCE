@@ -136,6 +136,7 @@ public class LoginView {
                 if (loginByUserNameAndPasssword(getUserTextField().getText(), getPwBox().getText())) {
                     getActiontarget().setFill(Color.GREEN);
                     getActiontarget().setText("Login succsessfull!");
+                    setLoggedUser(new User(getUserTextField().getText()));
                 } else {
                     System.out.println("Username: " + getUserTextField().getText());
                     System.out.println("Password: " + getPwBox().getText());
@@ -149,14 +150,6 @@ public class LoginView {
         Scene loginViewScene = new Scene(grid, 800, 660);
         return loginViewScene;
 
-    }
-
-    public User doLogin() {
-        User u = null;
-        if (getActiontarget().equals("Login succsessfull!")) {
-            u = new User(getUserTextField().getText());
-        }
-        return u;
     }
 
     private boolean loginByUserNameAndPasssword(String userName, String userPassword) {
