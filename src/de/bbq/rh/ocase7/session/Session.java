@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class Session implements IMySQLDatabaseDAO {
 
     private int id;
-    private User user;
+//    private User user;
     private SimpleDateFormat begin;
     private Cardbox sessionBox;
 
@@ -32,9 +32,9 @@ public class Session implements IMySQLDatabaseDAO {
         return this.id;
     }
 
-    public User getUser() {
-        return this.user;
-    }
+//    public User getUser() {
+//        return this.user;
+//    }
 
     public SimpleDateFormat getBegin() {
         return this.begin;
@@ -52,44 +52,42 @@ public class Session implements IMySQLDatabaseDAO {
         this.sessionBox = sessionBox;
     }
 
-    public Session(User user) {
-        insertSessionIDByUserID(user.getUserID());
-        this.id = fetchSessionIDByUserID(user.getUserID());
-        this.user = user;
+    public Session(int userID) {
+        insertSessionIDByUserID(userID);
+        this.id = userID;
+//        this.user = user;
         this.begin = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
         this.sessionBox = new Cardbox();
 
-        
     }
-    
+
     private void insertSessionIDByUserID(int userID) {
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "INSERT INTO lmildner_OCP6.`session` (`begin`, user_id) \n" +
-"	VALUES (CURRENT_TIMESTAMP, ?)";
+            String sql = "INSERT INTO lmildner_OCP6.`session` (`begin`, user_id) \n"
+                    + "	VALUES (CURRENT_TIMESTAMP, ?)";
             MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             MySQLConnection.pst.setInt(1, userID); //Die 1 bedeutet das erste "?" des INSERT Statments
             MySQLConnection.pst.executeUpdate();        //Bei nicht SELECT kommt executeUpdate!
-            MySQLConnection.rst = MySQLConnection.pst.getGeneratedKeys();
-            
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
-    
+
     private int fetchSessionIDByUserID(int userID) {
         int sessionID = 0;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT id FROM session WHERE user_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
-            MySQLConnection.pst.setInt(1, userID); 
+            MySQLConnection.pst.setInt(1, userID);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
                 MySQLConnection.rst.last();
                 sessionID = MySQLConnection.rst.getInt("id");
             }
-            
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -130,9 +128,9 @@ public class Session implements IMySQLDatabaseDAO {
                 MySQLConnection.pst.executeUpdate();
                 MySQLConnection.rst = MySQLConnection.pst.getGeneratedKeys();
                 while (MySQLConnection.rst.next()) {
-                s.id = MySQLConnection.rst.getInt(1);
-                }  
-            }       
+                    s.id = MySQLConnection.rst.getInt(1);
+                }
+            }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());

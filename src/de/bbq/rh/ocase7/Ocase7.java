@@ -7,12 +7,31 @@ import de.bbq.rh.ocase7.card.Category;
 import de.bbq.rh.ocase7.database.MySQLConnection;
 import de.bbq.rh.ocase7.session.Session;
 import de.bbq.rh.ocase7.session.User;
+import de.bbq.rh.ocase7.login.LoginView;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
-public class Ocase7 {
+public class Ocase7 extends Application {
 
     public void end(Scanner scn) {
         try {
@@ -72,28 +91,44 @@ public class Ocase7 {
     }
 
     public static void main(String[] args) {
-        Ocase7 o = new Ocase7();
-        User u = new User();
-        Session s = new Session(u);
-        System.out.println("");
-        System.out.println("sessionID: " + s.getId());
-        System.out.println("Name: " + s.getUser().getName());
-        System.out.println("");
+//        Ocase7 o = new Ocase7();
+//        User u = new User();
+//        Session s = new Session(u);
+//        System.out.println("");
+//        System.out.println("sessionID: " + s.getId());
+//        System.out.println("Name: " + s.getUser().getName());
+//        System.out.println("");
+//
+//        Cardbox cardbox = s.getSessionBox();
+//        Card card = cardbox.getCardList().get(0);
+//        Category category = cardbox.getCardList().get(0).getCat();
+//
+//        o.printCategoriesList(category);
+//
+//        Scanner scn = new Scanner(System.in);
+//        System.out.println("Which Category ID?");
+//        int categoryID = scn.nextInt();
+//
+//        s.setSessionBox((Cardbox) cardbox.getCardboxByCategoryID(cardbox, categoryID));
+//        cardbox = s.getSessionBox();
+//        o.printQuestionByCardbox(cardbox, scn, o);
+//
+//        o.end(scn);
+//        --------------------------------------------------------
 
-        Cardbox cardbox = s.getSessionBox();
-        Card card = cardbox.getCardList().get(0);
-        Category category = cardbox.getCardList().get(0).getCat();
+        launch(args);
 
-        o.printCategoriesList(category);
+    }
 
-        Scanner scn = new Scanner(System.in);
-        System.out.println("Which Category ID?");
-        int categoryID = scn.nextInt();
+    @Override
+    public void start(Stage primaryStage) {
+        primaryStage.setTitle("OCP6");
+        primaryStage.setMinHeight(800);
+        primaryStage.setMinWidth(660);
+        LoginView loginView = new LoginView();
+        Scene loginViewScene = loginView.createLoginView();
+        primaryStage.setScene(loginViewScene);
 
-        s.setSessionBox((Cardbox) cardbox.getCardboxByCategoryID(cardbox, categoryID));
-        cardbox = s.getSessionBox();
-        o.printQuestionByCardbox(cardbox, scn, o);
-
-        o.end(scn);
+        primaryStage.show();
     }
 }

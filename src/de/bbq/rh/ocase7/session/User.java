@@ -7,6 +7,7 @@ package de.bbq.rh.ocase7.session;
 
 import de.bbq.rh.ocase7.database.MySQLConnection;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
@@ -18,27 +19,41 @@ public class User {
     private final int userID;
     private final String name;
     private final String password;
+    private Session userSession;
 
     public int getUserID() {
-        return userID;
+        return this.userID;
     }
 
     public String getName() {
         return this.name;
     }
 
-    public User(int user_id, String name, String password) {
+    public Session getUserSession() {
+        return this.userSession;
+    }
+
+    public User(int user_id, String name, String password, Session userSession) {
         this.userID = user_id;
         this.name = name;
         this.password = password;
+        this.userSession = userSession;
     }
-    
+
     public User(int userID) {
         this.userID = userID;
         this.name = fetchUserNameByUserID(userID);
         this.password = fetchUserPasswordByUserID(userID);
+        this.userSession = new Session(userID);
     }
-    
+
+    public User(String userName) {
+        this.userID = fetchUserIDByUserName(userName);
+        this.name = fetchUserNameByUserID(this.userID);
+        this.password = fetchUserPasswordByUserID(this.userID);
+        this.userSession = new Session(fetchUserIDByUserName(userName));
+    }
+
     public User() {
         this(1);
     }
@@ -59,7 +74,7 @@ public class User {
         }
         return userId;
     }
-    
+
     private String fetchUserNameByUserID(int userID) {
         String userName = null;
         try {
@@ -76,8 +91,8 @@ public class User {
         }
         return userName;
     }
-    
-    private String fetchUserPasswordByUserID(int userID)  {
+
+    private String fetchUserPasswordByUserID(int userID) {
         String userPassword = null;
         try {
             Connection con = MySQLConnection.getConnection();
@@ -92,5 +107,22 @@ public class User {
             System.out.println(e.getMessage());
         }
         return userPassword;
+    }
+
+    public void insertUserIDIntoDB(User u) {
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "INSERT INTO lmildner_OCP6.`userAnswer` (`user_id`, `answer_id`) \n"
+                    + "	VALUES (?, ?)";
+            for (int i = 0; i < u.userSession.getSessionBox().getCardList().size(); i++) {
+                MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                MySQLConnection.pst.setInt(1, u.getUserID());
+                MySQLConnection.pst.setInt(2, u.getUserSession().getSessionBox().getCardList().get(i).getAnswer().getId());//Die 1 bedeutet das erste "?" des INSERT Statments
+                MySQLConnection.pst.executeUpdate();        //Bei nicht SELECT kommt executeUpdate!
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
