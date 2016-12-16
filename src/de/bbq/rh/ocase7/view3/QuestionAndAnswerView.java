@@ -265,7 +265,7 @@ public class QuestionAndAnswerView {
     }
 
     public VBox addQnAVBox() {
-        
+
         VBox questionNAnswerVBox = new VBox();
         questionNAnswerVBox.setPadding(new Insets(5, 0, 5, 0));
         questionNAnswerVBox.setSpacing(10);
@@ -286,7 +286,7 @@ public class QuestionAndAnswerView {
         });
 
         setAnswerContent(createAnswerBox());
-        
+
         getScrollPaneContent().getChildren().addAll(getQuestionTextArea(), getAnswerContent());
         getScrollPaneContent().setFillWidth(true);
         questionNAnswerVBox.getChildren().add(getScrollPaneContent());
@@ -360,7 +360,6 @@ public class QuestionAndAnswerView {
         if (!getCurrentCard().isSolutionGiven()) {
             for (Map.Entry<Integer, String> key : getCurrentCard().getAnswer().getTextMap().entrySet()) {
                 cb = new CheckBox();
-                System.out.println(getCurrentCard().getAnswer().getTextMap().get(key.getKey()));
                 answerLabel = new Label(getCurrentCard().getAnswer().getTextMap().get(key.getKey()));
                 if (getCurrentCard().isSolutionGiven()) {
                     cb.setSelected(true);
@@ -392,19 +391,23 @@ public class QuestionAndAnswerView {
 
     private VBox addCorrectAnswersBox() {
         VBox answerBox = new VBox();
-        HBox checkboxWithAnswerBox = null;
-        checkboxWithAnswerBox.setAlignment(Pos.CENTER_LEFT);
+        HBox checkboxWithAnswerBox = new HBox();
+        CheckBox cb = new CheckBox();
+        Label answerLabel = new Label();
 
         for (Map.Entry<Integer, Boolean> key : getCurrentCard().getAnswer().getIsRightMap().entrySet()) {
             if (key.getValue()) {
-                CheckBox cb = new CheckBox();
+                cb = new CheckBox();
                 cb.setSelected(true);
-                Label answerLabel = new Label(getCurrentCard().getAnswer().getTextMap().get(key));
+                answerLabel = new Label(getCurrentCard().getAnswer().getTextMap().get(key.getKey()));
                 answerLabel.setTextFill(Color.GREEN);
                 checkboxWithAnswerBox = new HBox(cb, answerLabel);
+                checkboxWithAnswerBox.setAlignment(Pos.CENTER_LEFT);
+                checkboxWithAnswerBox.setSpacing(10);
+                answerBox.getChildren().add(checkboxWithAnswerBox);
+                answerBox.setSpacing(20);
             }
-            answerBox.getChildren().add(checkboxWithAnswerBox);
-            answerBox.setSpacing(20);
+
         }
         return answerBox;
     }

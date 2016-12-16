@@ -106,6 +106,8 @@ public class Ocase7 extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
+        
         primaryStage.setTitle("OCP6");
         primaryStage.setMinHeight(800);
         primaryStage.setMinWidth(660);
