@@ -18,6 +18,8 @@ public class Card implements IMySQLDatabaseDAO {
     private int id;
     private String question;
     private Answer answer;
+    private boolean isSelected;
+    private boolean solutionGiven;
 
     public Category getCat() {
         return this.cat;
@@ -31,6 +33,14 @@ public class Card implements IMySQLDatabaseDAO {
         return this.question;
     }
 
+    public boolean isIsSelected() {
+        return this.isSelected;
+    }
+
+    public boolean isSolutionGiven() {
+        return this.solutionGiven;
+    }
+
     private void setCat(Category cat) {
         this.cat = cat;
     }
@@ -41,6 +51,14 @@ public class Card implements IMySQLDatabaseDAO {
 
     private void setQuestion(String question) {
         this.question = question;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    public void setSolutionGiven(boolean solutionGiven) {
+        this.solutionGiven = solutionGiven;
     }
 
     public Answer getAnswer() {

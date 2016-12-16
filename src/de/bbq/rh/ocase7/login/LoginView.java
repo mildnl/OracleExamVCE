@@ -9,6 +9,9 @@ import de.bbq.rh.ocase7.database.MySQLConnection;
 import de.bbq.rh.ocase7.session.User;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -37,6 +40,15 @@ public class LoginView {
     private Button btn;
     private Text actiontarget;
     private User loggedUser;
+    private boolean loginComplete;
+
+    public void setLoginComplete(boolean loginComplete) {
+        this.loginComplete = loginComplete;
+    }
+
+    public boolean isLoginComplete() {
+        return this.loginComplete;
+    }
 
     public TextField getUserTextField() {
         return this.userTextField;
@@ -84,20 +96,14 @@ public class LoginView {
         this.btn = btn;
         this.actiontarget = actiontarget;
         this.loggedUser = loggedUser;
+        this.loginComplete = false;
     }
 
     public LoginView() {
-        this.userTextField = null;
-        this.pwBox = null;
-        this.btn = null;
-        this.actiontarget = null;
-        this.loggedUser = null;
+        this(null, null, null, null, null);
     }
 
     public Scene createLoginView() {
-        Group loginViewRoot = new Group();
-        loginViewRoot.setAutoSizeChildren(true);
-
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -137,6 +143,12 @@ public class LoginView {
                     getActiontarget().setFill(Color.GREEN);
                     getActiontarget().setText("Login succsessfull!");
                     setLoggedUser(new User(getUserTextField().getText()));
+                    try {
+                        TimeUnit.SECONDS.sleep(2);
+                    } catch (InterruptedException exc) {
+                        exc.printStackTrace();
+                    }
+                    setLoginComplete(true);
                 } else {
                     System.out.println("Username: " + getUserTextField().getText());
                     System.out.println("Password: " + getPwBox().getText());

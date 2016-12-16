@@ -9,6 +9,8 @@ import de.bbq.rh.ocase7.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map.Entry;
 
 /**
  *
@@ -110,15 +112,23 @@ public class User {
     }
 
     public void insertUserAnswersIDIntoDB(User u) {
+        ArrayList<Integer> userAnswerList = new ArrayList<>();
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "INSERT INTO lmildner_OCP6.`userAnswer` (`user_id`, `answer_id`) \n"
                     + "	VALUES (?, ?)";
+            MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             for (int i = 0; i < u.userSession.getSessionBox().getCardList().size(); i++) {
-                MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+                for (Entry<Integer, Boolean> key : u.getUserSession().getSessionBox().getCardList().get(i).getAnswer().getIsSelectedMap().entrySet()) {
+                    if (key.getValue()) {
+                        userAnswerList.add(key.getKey());
+                    }
+                }
+            }
+            for (int c = 0; c < userAnswerList.size(); c++) {
                 MySQLConnection.pst.setInt(1, u.getUserID());
-                MySQLConnection.pst.setInt(2, u.getUserSession().getSessionBox().getCardList().get(i).getAnswer().getId());//Die 1 bedeutet das erste "?" des INSERT Statments
-                MySQLConnection.pst.executeUpdate();        //Bei nicht SELECT kommt executeUpdate!
+                MySQLConnection.pst.setInt(2, userAnswerList.get(c));
+                MySQLConnection.pst.executeUpdate();
             }
 
         } catch (SQLException e) {
