@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.bbq.rh.ocase7.session;
+package de.bbq.rh.oracleExams.session;
 
-import de.bbq.rh.ocase7.database.MySQLConnection;
+import de.bbq.rh.oracleExams.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

@@ -1,7 +1,7 @@
-package de.bbq.rh.ocase7;
+package de.bbq.rh.oracleExams;
 
-import de.bbq.rh.ocase7.database.MySQLConnection;
-import de.bbq.rh.ocase7.database.IMySQLDatabaseDAO;
+import de.bbq.rh.oracleExams.database.MySQLConnection;
+import de.bbq.rh.oracleExams.database.IMySQLDatabaseDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

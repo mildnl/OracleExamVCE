@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.bbq.rh.ocase7.login;
+package de.bbq.rh.oracleExams.sceneOne;
 
-import de.bbq.rh.ocase7.database.MySQLConnection;
-import de.bbq.rh.ocase7.session.User;
+import de.bbq.rh.oracleExams.Main;
+import de.bbq.rh.oracleExams.database.MySQLConnection;
+import de.bbq.rh.oracleExams.sceneThree.QuestionAndAnswerScene;
+import de.bbq.rh.oracleExams.sceneTwo.CardboxSelectionScene;
+import de.bbq.rh.oracleExams.session.User;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -33,12 +33,12 @@ import javafx.scene.text.Text;
  *
  * @author $ Lyn Mildner
  */
-public class LoginView {
+public class LoginScene {
 
     private TextField userTextField;
-    private PasswordField pwBox;
+    private PasswordField passwordBox;
     private Button btn;
-    private Text actiontarget;
+    private Text actionTarget;
     private User loggedUser;
     private boolean loginComplete;
 
@@ -54,16 +54,16 @@ public class LoginView {
         return this.userTextField;
     }
 
-    public PasswordField getPwBox() {
-        return this.pwBox;
+    public PasswordField getPasswordBox() {
+        return this.passwordBox;
     }
 
     public Button getBtn() {
         return this.btn;
     }
 
-    public Text getActiontarget() {
-        return this.actiontarget;
+    public Text getActionTarget() {
+        return this.actionTarget;
     }
 
     public User getLoggedUser() {
@@ -74,36 +74,36 @@ public class LoginView {
         this.userTextField = userTextField;
     }
 
-    private void setPwBox(PasswordField pwBox) {
-        this.pwBox = pwBox;
+    private void setPasswordBox(PasswordField passwordBox) {
+        this.passwordBox = passwordBox;
     }
 
     private void setBtn(Button btn) {
         this.btn = btn;
     }
 
-    private void setActiontarget(Text actiontarget) {
-        this.actiontarget = actiontarget;
+    private void setActionTarget(Text actionTarget) {
+        this.actionTarget = actionTarget;
     }
 
     public void setLoggedUser(User loggedUser) {
         this.loggedUser = loggedUser;
     }
 
-    public LoginView(TextField userTextField, PasswordField pwBox, Button btn, Text actiontarget, User loggedUser) {
+    public LoginScene(TextField userTextField, PasswordField pwBox, Button btn, Text actiontarget, User loggedUser) {
         this.userTextField = userTextField;
-        this.pwBox = pwBox;
+        this.passwordBox = pwBox;
         this.btn = btn;
-        this.actiontarget = actiontarget;
+        this.actionTarget = actiontarget;
         this.loggedUser = loggedUser;
         this.loginComplete = false;
     }
 
-    public LoginView() {
+    public LoginScene() {
         this(null, null, null, null, null);
     }
 
-    public Scene createLoginView() {
+    public Scene createLoginView(Main m) {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -123,8 +123,8 @@ public class LoginView {
         Label pw = new Label("Password:");
         grid.add(pw, 0, 2);
 
-        setPwBox(new PasswordField());
-        grid.add(getPwBox(), 1, 2);
+        setPasswordBox(new PasswordField());
+        grid.add(getPasswordBox(), 1, 2);
 
         setBtn(new Button("Sign in"));
         HBox hbBtn = new HBox(10);
@@ -132,30 +132,28 @@ public class LoginView {
         hbBtn.getChildren().add(btn);
         grid.add(hbBtn, 1, 4);
 
-        setActiontarget(new Text());
-        grid.add(getActiontarget(), 1, 6);
+        setActionTarget(new Text());
+        grid.add(getActionTarget(), 1, 6);
 
-        getBtn().setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent e) {
-                if (loginByUserNameAndPasssword(getUserTextField().getText(), getPwBox().getText())) {
-                    getActiontarget().setFill(Color.GREEN);
-                    getActiontarget().setText("Login succsessfull!");
-                    setLoggedUser(new User(getUserTextField().getText()));
-                    try {
-                        TimeUnit.SECONDS.sleep(2);
-                    } catch (InterruptedException exc) {
-                        exc.printStackTrace();
-                    }
-                    setLoginComplete(true);
-                } else {
-                    System.out.println("Username: " + getUserTextField().getText());
-                    System.out.println("Password: " + getPwBox().getText());
-                    getActiontarget().setFill(Color.FIREBRICK);
-                    getActiontarget().setText("Login Password or Username doesnt match!");
+        getBtn().setOnAction((ActionEvent e) -> {
+            if (loginByUserNameAndPasssword(getUserTextField().getText(), getPasswordBox().getText())) {
+                getActionTarget().setFill(Color.GREEN);
+                getActionTarget().setText("Login succsessfull!");
+                setLoggedUser(new User(getUserTextField().getText()));
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException exc) {
+                    System.out.println(exc.getMessage());
                 }
-
+                CardboxSelectionScene viewTwo = new CardboxSelectionScene(getLoggedUser());
+                Scene viewTwoScene = viewTwo.createSceneTwo(m);
+                m.setCurrentScene(viewTwoScene);
+                m.getStage().setScene(m.getCurrentScene());
+            } else {
+                System.out.println("Username: " + getUserTextField().getText());
+                System.out.println("Password: " + getPasswordBox().getText());
+                getActionTarget().setFill(Color.FIREBRICK);
+                getActionTarget().setText("Login Password or Username doesnt match!");
             }
         });
 

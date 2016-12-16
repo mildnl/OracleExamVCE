@@ -1,11 +1,11 @@
-package de.bbq.rh.ocase7.view3;
+package de.bbq.rh.oracleExams.sceneThree;
 
-import de.bbq.rh.ocase7.Test;
-import de.bbq.rh.ocase7.card.Answer;
-import de.bbq.rh.ocase7.card.Card;
-import de.bbq.rh.ocase7.card.Cardbox;
-import de.bbq.rh.ocase7.database.MySQLConnection;
-import de.bbq.rh.ocase7.session.User;
+import de.bbq.rh.oracleExams.Test;
+import de.bbq.rh.oracleExams.card.Answer;
+import de.bbq.rh.oracleExams.card.Card;
+import de.bbq.rh.oracleExams.card.Cardbox;
+import de.bbq.rh.oracleExams.database.MySQLConnection;
+import de.bbq.rh.oracleExams.session.User;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,18 +43,18 @@ import javafx.scene.text.Text;
  *
  * @author $ Lyn Mildner
  */
-public class QuestionAndAnswerView {
+public class QuestionAndAnswerScene {
 
-    private User loggedUser;
+    private User currentUser;
     private Card currentCard;
     private int currentCardIndex;
     private ScrollPane questionAndAnswerPane;
     private VBox scrollPaneContent;
-    private VBox questionContent;
-    private VBox answerContent;
+    private VBox questionContentBox;
+    private VBox answerContentBox;
     private TextArea questionTextArea;
-    private HBox topBar;
-    private HBox buttomMenue;
+    private HBox topBarBox;
+    private HBox buttomMenueBox;
 
     public Card getCurrentCard() {
         return this.currentCard;
@@ -80,32 +80,32 @@ public class QuestionAndAnswerView {
         return this.questionTextArea;
     }
 
-    public VBox getQuestionContent() {
-        return this.questionContent;
+    public VBox getQuestionContentBox() {
+        return this.questionContentBox;
     }
 
-    public VBox getAnswerContent() {
-        return this.answerContent;
+    public VBox getAnswerContentBox() {
+        return this.answerContentBox;
     }
 
-    private void setQuestionContent(VBox questionContent) {
-        this.questionContent = questionContent;
+    private void setQuestionContentBox(VBox questionContentBox) {
+        this.questionContentBox = questionContentBox;
     }
 
-    private void setAnswerContent(VBox answerContent) {
-        this.answerContent = answerContent;
+    private void setAnswerContentBox(VBox answerContentBox) {
+        this.answerContentBox = answerContentBox;
     }
 
-    public HBox getTopBar() {
-        return this.topBar;
+    public HBox getTopBarBox() {
+        return this.topBarBox;
     }
 
-    public User getLoggedUser() {
-        return this.loggedUser;
+    public User getCurrentUser() {
+        return this.currentUser;
     }
 
-    public HBox getButtomMenue() {
-        return this.buttomMenue;
+    public HBox getButtomMenueBox() {
+        return this.buttomMenueBox;
     }
 
     public ScrollPane getQuestionAndAnswerPane() {
@@ -116,16 +116,16 @@ public class QuestionAndAnswerView {
         return this.scrollPaneContent;
     }
 
-    private void setTopBar(HBox topBar) {
-        this.topBar = topBar;
+    private void setTopBarBox(HBox topBarBox) {
+        this.topBarBox = topBarBox;
     }
 
-    private void setLoggedUser(User loggedUser) {
-        this.loggedUser = loggedUser;
+    private void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
-    private void setButtomMenue(HBox buttomMenue) {
-        this.buttomMenue = buttomMenue;
+    private void setButtomMenueBox(HBox buttomMenueBox) {
+        this.buttomMenueBox = buttomMenueBox;
     }
 
     private void setQuestionAndAnswerPane(ScrollPane questionAndAnswerPane) {
@@ -137,19 +137,19 @@ public class QuestionAndAnswerView {
     }
 
     private Cardbox getUserCardbox() {
-        return loggedUser.getUserSession().getSessionBox();
+        return currentUser.getUserSession().getSessionBox();
     }
 
     private Card getCurrentCardByIndex(int index) {
-        return loggedUser.getUserSession().getSessionBox().getCardList().get(index);
+        return currentUser.getUserSession().getSessionBox().getCardList().get(index);
     }
 
     public Answer getCurrentAnswers(int index) {
-        return loggedUser.getUserSession().getSessionBox().getCardList().get(index).getAnswer();
+        return currentUser.getUserSession().getSessionBox().getCardList().get(index).getAnswer();
     }
 
-    public QuestionAndAnswerView(User loggedUser) {
-        this.loggedUser = loggedUser;
+    public QuestionAndAnswerScene(User loggedUser) {
+        this.currentUser = loggedUser;
         this.currentCard = getCurrentCardByIndex(0);
         this.currentCardIndex = 0;
     }
@@ -168,11 +168,11 @@ public class QuestionAndAnswerView {
         getQuestionAndAnswerPane().setMaxHeight(700);
         getQuestionAndAnswerPane().setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        setTopBar(addTopBarHBox());
-        addStackPane(getTopBar());
+        setTopBarBox(addTopBarHBox());
+        addStackPane(getTopBarBox());
         getQuestionAndAnswerPane().setContent(addQnAVBox());
-        setButtomMenue(createBottomMenue());
-        viewContentBox.getChildren().addAll(getTopBar(), getQuestionAndAnswerPane(), getButtomMenue());
+        setButtomMenueBox(createBottomMenue());
+        viewContentBox.getChildren().addAll(getTopBarBox(), getQuestionAndAnswerPane(), getButtomMenueBox());
 
         viewThreeRoot.getChildren().add(viewContentBox);
 
@@ -193,8 +193,8 @@ public class QuestionAndAnswerView {
         buttonPrevious.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                getQuestionContent().getChildren().clear();
-                getAnswerContent().getChildren().clear();
+                getQuestionContentBox().getChildren().clear();
+                getAnswerContentBox().getChildren().clear();
 
                 if ((getCurrentCardIndex() - 1) > 0) {
                     setCurrentCard(getUserCardbox().getCardList().get(getCurrentCardIndex() - 1));
@@ -205,7 +205,7 @@ public class QuestionAndAnswerView {
                 setCurrentCard(getCurrentCardByIndex(getCurrentCardIndex()));
                 getQuestionTextArea().setText(getCurrentCard().getQuestion());
 
-                getQuestionContent().getChildren().add(getQuestionTextArea());
+                getQuestionContentBox().getChildren().add(getQuestionTextArea());
                 getScrollPaneContent().getChildren().add(createAnswerBox());
             }
         });
@@ -213,8 +213,8 @@ public class QuestionAndAnswerView {
         buttonNext.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                getQuestionContent().getChildren().clear();
-                getAnswerContent().getChildren().clear();
+                getQuestionContentBox().getChildren().clear();
+                getAnswerContentBox().getChildren().clear();
 
                 if (getCurrentCardIndex() < (getUserCardbox().getCardList().size() - 1)) {
                     setCurrentCard(getUserCardbox().getCardList().get(getCurrentCardIndex() + 1));
@@ -224,15 +224,21 @@ public class QuestionAndAnswerView {
 
                 getQuestionTextArea().setText(getCurrentCardByIndex(0).getQuestion());
 
-                getQuestionContent().getChildren().add(getQuestionTextArea());
+                getQuestionContentBox().getChildren().add(getQuestionTextArea());
                 getScrollPaneContent().getChildren().add(createAnswerBox());
             }
         });
 
         String cardboxSize = String.valueOf(getUserCardbox().getCardList().size());
-        String currentIndex = String.valueOf(getCurrentCardIndex());
+        String currentIndex = null;
+        if (getCurrentCardIndex() == 0) {
+            currentIndex = String.valueOf(getCurrentCardIndex() + 1);
+        } else {
+            currentIndex = String.valueOf(getCurrentCardIndex());
+        }
 
         Label currentQuestion = new Label(currentIndex + " / " + cardboxSize);
+        currentQuestion.setAlignment(Pos.CENTER);
 
         hbox.getChildren().addAll(buttonPrevious, buttonNext, currentQuestion);
 
@@ -285,9 +291,9 @@ public class QuestionAndAnswerView {
             }
         });
 
-        setAnswerContent(createAnswerBox());
+        setAnswerContentBox(createAnswerBox());
 
-        getScrollPaneContent().getChildren().addAll(getQuestionTextArea(), getAnswerContent());
+        getScrollPaneContent().getChildren().addAll(getQuestionTextArea(), getAnswerContentBox());
         getScrollPaneContent().setFillWidth(true);
         questionNAnswerVBox.getChildren().add(getScrollPaneContent());
 
@@ -311,7 +317,7 @@ public class QuestionAndAnswerView {
             @Override
             public void handle(ActionEvent event) {
                 getCurrentCardByIndex(0).setSolutionGiven(true);
-                getScrollPaneContent().getChildren().remove(getAnswerContent());
+                getScrollPaneContent().getChildren().remove(getAnswerContentBox());
                 VBox anserbow = addCorrectAnswersBox();
                 anserbow.setDisable(true);
                 getScrollPaneContent().getChildren().add(anserbow);
@@ -326,7 +332,7 @@ public class QuestionAndAnswerView {
             @Override
             public void handle(ActionEvent event) {
                 if (getUserCardbox().getCardList().size() > 1) {
-                    getLoggedUser().insertUserAnswersIDIntoDB(getLoggedUser());
+                    getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
                 }
                 try {
                     if (MySQLConnection.pst != null) {

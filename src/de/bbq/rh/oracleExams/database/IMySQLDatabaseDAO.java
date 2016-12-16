@@ -1,4 +1,4 @@
-package de.bbq.rh.ocase7.database;
+package de.bbq.rh.oracleExams.database;
 
 import java.util.ArrayList;
 
