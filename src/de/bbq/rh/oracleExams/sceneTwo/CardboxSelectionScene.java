@@ -12,10 +12,8 @@ import de.bbq.rh.oracleExams.sceneThree.QuestionAndAnswerScene;
 import de.bbq.rh.oracleExams.session.Session;
 import de.bbq.rh.oracleExams.session.User;
 import java.util.ArrayList;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -26,7 +24,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -40,6 +37,7 @@ public class CardboxSelectionScene {
 
     private User currentUser;
     private int cardBoxSize;
+    private ArrayList<Integer> selectedCategoryList;
     private Label maxQuestionLabel;
     private Scene CardboxSelectionScene;
     private HBox categoryCheckBox;
@@ -56,6 +54,10 @@ public class CardboxSelectionScene {
 
     public int getCardBoxSize() {
         return this.cardBoxSize;
+    }
+
+    public ArrayList<Integer> getSelectedCategoryList() {
+        return this.selectedCategoryList;
     }
 
     public Label getMaxQuestionLabel() {
@@ -100,6 +102,10 @@ public class CardboxSelectionScene {
 
     public void setCardBoxSize(int cardBoxSize) {
         this.cardBoxSize = cardBoxSize;
+    }
+
+    public void setSelectedCategoryList(ArrayList<Integer> selectedCategoryList) {
+        this.selectedCategoryList = selectedCategoryList;
     }
 
     public void setMaxQuestionLabel(Label maxQuestionLabel) {
@@ -154,14 +160,16 @@ public class CardboxSelectionScene {
         return this.currentUser.getUserSession().getSessionBox().getCardList().get(0).getCat().getAllList();
     }
 
-    private CardboxSelectionScene(User currentUser, int cardBoxSize, 
-            Label maxQuestionLabel, Scene CardboxSelectionScene, 
-            HBox categoryCheckBox, VBox sceneTwoContentBox, 
-            VBox topMenueBox, VBox categoryBox, HBox learnModeBox, 
-            Slider questionSlider, ArrayList<CheckBox> checkBoxList) {
-        
+    private CardboxSelectionScene(User currentUser, int cardBoxSize,
+            ArrayList<Integer> selectedCategoryList, Label maxQuestionLabel,
+            Scene CardboxSelectionScene, HBox categoryCheckBox,
+            VBox sceneTwoContentBox, VBox topMenueBox, VBox categoryBox,
+            HBox learnModeBox, Slider questionSlider,
+            ArrayList<CheckBox> checkBoxList) {
+
         this.currentUser = currentUser;
         this.cardBoxSize = cardBoxSize;
+        this.selectedCategoryList = selectedCategoryList;
         this.maxQuestionLabel = maxQuestionLabel;
         this.CardboxSelectionScene = CardboxSelectionScene;
         this.categoryCheckBox = categoryCheckBox;
@@ -174,7 +182,7 @@ public class CardboxSelectionScene {
     }
 
     public CardboxSelectionScene(User currentUser) {
-        this(currentUser, 0, new Label(), null, null, new VBox(), null, null,
+        this(currentUser, 0, new ArrayList<Integer>(), new Label(), null, null, new VBox(), null, null,
                 null, null, new ArrayList<>());
     }
 
@@ -189,12 +197,15 @@ public class CardboxSelectionScene {
 
         StackPane sliderStackPane = createSlider();
 
-        HBox resetAndStartButtonBox = createButtonBox();
-        sceneTwoContentBox.setMaxWidth(700);
-        sceneTwoContentBox.getChildren().addAll(getTopMenueBox(), categoryBox, sliderStackPane, learnModeBox, resetAndStartButtonBox);
-        viewTwoRoot.getChildren().addAll(sceneTwoContentBox);
-        CardboxSelectionScene = new Scene(viewTwoRoot);
-        return CardboxSelectionScene;
+        HBox resetAndStartButtonBox = createButtonBox(m);
+        getSceneTwoContentBox().setMaxWidth(700);
+        getSceneTwoContentBox().getChildren().addAll(getTopMenueBox(),
+                getCategoryBox(), sliderStackPane, getLearnModeBox(),
+                resetAndStartButtonBox);
+
+        viewTwoRoot.getChildren().addAll(getSceneTwoContentBox());
+        setCardboxSelectionScene(new Scene(viewTwoRoot));
+        return getCardboxSelectionScene();
     }
 
     private VBox addTopMenueBox() {
@@ -236,23 +247,32 @@ public class CardboxSelectionScene {
 
         }
         getCheckBoxList().forEach((checkBox) -> {
-            checkBox.selectedProperty().addListener((ObservableValue
-                    <? extends Boolean> observable, Boolean oldValue, 
+            checkBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue) -> {
-                
+
                 if (newValue) {
                     checkBox.setSelected(true);
-                    setCardBoxSize(getCardBoxSize() + 
-                            getUserCardboxByCategoryId(getCheckBoxList().
-                                    indexOf(checkBox)).getCardList().size());
+                    setCardBoxSize(getCardBoxSize()
+                            + getUserCardboxByCategoryId(getCheckBoxList().
+                                    indexOf(checkBox)).getCardList().size() + 1);
                     getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
                     getQuestionSlider().setMax(getCardBoxSize());
+                    getSelectedCategoryList().add(getCheckBoxList().
+                            indexOf(checkBox) + 1);
+                    System.out.println("CategoryIds: " + getSelectedCategoryList());
                 } else {
-                    setCardBoxSize(getCardBoxSize() - 
-                            getUserCardboxByCategoryId(getCheckBoxList().
-                                    indexOf(checkBox)).getCardList().size());
+                    setCardBoxSize(getCardBoxSize()
+                            - getUserCardboxByCategoryId(getCheckBoxList().
+                                    indexOf(checkBox)).getCardList().size() + 1);
                     getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
                     getQuestionSlider().setMax(getCardBoxSize());
+                    if (getSelectedCategoryList().size() == 1) {
+                        getSelectedCategoryList().clear();
+                    } else {
+                        getSelectedCategoryList().remove(getCheckBoxList().indexOf(checkBox) + 1);
+                    }
+
+                    System.out.println("CategoryIds: " + getSelectedCategoryList());
                 }
             });
         });
@@ -260,7 +280,7 @@ public class CardboxSelectionScene {
         getCheckBoxList().get(1).setOnAction((ActionEvent event) -> {
             getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
         });
-        
+
         categoryVBox.setAlignment(Pos.CENTER);
 
         return categoryVBox;
@@ -299,19 +319,21 @@ public class CardboxSelectionScene {
         getQuestionSlider().setMajorTickUnit(10);
         getQuestionSlider().setMinorTickCount(5);
         StackPane sliderRoot = new StackPane(getQuestionSlider());
+        sliderRoot.setAlignment(Pos.CENTER);
+        sliderRoot.setPadding(new Insets(30, 30, 30, 30));
+        sliderRoot.setMaxWidth(450);
 
-        getQuestionSlider().layout();
-        Pane sliderPane = (Pane) getQuestionSlider().lookup(".thumb");
-        Label sliderLabel = new Label();
-        sliderLabel.textProperty().bind(getQuestionSlider().valueProperty().asString("%.0f"));
-
-        sliderPane.getChildren().addAll(sliderLabel);
-
+//        getQuestionSlider().layout();
+//        Pane sliderPane = (Pane) getQuestionSlider().lookup(".thumb");
+//        Label sliderLabel = new Label();
+//        sliderLabel.textProperty().bind(getQuestionSlider().valueProperty().asString("%.0f"));
+//
+//        sliderPane.getChildren().addAll(sliderLabel);
         return sliderRoot;
 
     }
 
-    private HBox createButtonBox() {
+    private HBox createButtonBox(Main m) {
         HBox ButtonBox = new HBox();
         ButtonBox.setPadding(new Insets(100, 0, 80, 230));
         VBox resetButtonBox = new VBox();
@@ -320,11 +342,23 @@ public class CardboxSelectionScene {
 
         Button resetBtn = new Button("Reset");
         resetBtn.setOnAction((ActionEvent event) -> {
+            getSelectedCategoryList().clear();
             getCheckBoxList().forEach((checkbox) -> {
                 checkbox.setSelected(false);
             });
         });
-        Button startBtn = new Button("Session starten");
+        Button startBtn = new Button("Start Session");
+        startBtn.setOnAction((ActionEvent event) -> {
+            getCurrentUser().getUserSession().getSessionBox().getCardboxByMultipleCategoryIDs(getCurrentUser().
+                    getUserSession().getSessionBox(),
+                    getSelectedCategoryList());
+
+            QuestionAndAnswerScene viewTwo = new QuestionAndAnswerScene(getCurrentUser());
+            Scene sceneThree = viewTwo.createSceneThree(m);
+            m.setCurrentScene(sceneThree);
+            m.getStage().setScene(m.getCurrentScene());
+        });
+
         resetButtonBox.getChildren().add(resetBtn);
         startButtonBox.getChildren().add(startBtn);
         ButtonBox.getChildren().addAll(resetButtonBox, startButtonBox);

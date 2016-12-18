@@ -41,14 +41,14 @@ public class Category implements IMySQLDatabaseDAO {
     
     public Category(int id) {
         this.id = id;
-        this.name = getTextByCategoryID(id); 
+        this.name = getTextByCategoryIDs(id); 
    }
     
     public Category() {
         this(4);
     }
     
-    private String getTextByCategoryID(int id) {
+    private String getTextByCategoryIDs(int id) {
         String categoryName = "empty";
         try {
             Connection con = MySQLConnection.getConnection();

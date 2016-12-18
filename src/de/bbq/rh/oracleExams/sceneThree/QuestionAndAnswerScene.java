@@ -1,5 +1,6 @@
 package de.bbq.rh.oracleExams.sceneThree;
 
+import de.bbq.rh.oracleExams.Main;
 import de.bbq.rh.oracleExams.Test;
 import de.bbq.rh.oracleExams.card.Answer;
 import de.bbq.rh.oracleExams.card.Card;
@@ -151,10 +152,10 @@ public class QuestionAndAnswerScene {
     public QuestionAndAnswerScene(User loggedUser) {
         this.currentUser = loggedUser;
         this.currentCard = getCurrentCardByIndex(0);
-        this.currentCardIndex = 0;
+        this.currentCardIndex = 1;
     }
 
-    public Scene createViewThree() {
+    public Scene createSceneThree(Main m) {
 
         Group viewThreeRoot = new Group();
         Scene viewThreeScene = new Scene(viewThreeRoot);
@@ -190,57 +191,45 @@ public class QuestionAndAnswerScene {
         Button buttonNext = new Button("Next");
         buttonNext.setPrefSize(100, 20);
 
-        buttonPrevious.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                getQuestionContentBox().getChildren().clear();
-                getAnswerContentBox().getChildren().clear();
+        Label currentQuestion = new Label("1");
+        currentQuestion.setFont(Font.font("Verdana", FontWeight.BOLD, 16));
+        Label cardboxSize = new Label(" / " + String.valueOf(getUserCardbox().getCardList().size()));
+        cardboxSize.setFont(Font.font("Verdana", FontWeight.BOLD, 16));
 
-                if ((getCurrentCardIndex() - 1) > 0) {
-                    setCurrentCard(getUserCardbox().getCardList().get(getCurrentCardIndex() - 1));
-                } else {
-                    setCurrentCard(getUserCardbox().getCardList().get(getUserCardbox().getCardList().size() - 1));
-                }
+        buttonPrevious.setOnAction((ActionEvent event) -> {
 
-                setCurrentCard(getCurrentCardByIndex(getCurrentCardIndex()));
-                getQuestionTextArea().setText(getCurrentCard().getQuestion());
-
-                getQuestionContentBox().getChildren().add(getQuestionTextArea());
-                getScrollPaneContent().getChildren().add(createAnswerBox());
+            if (getCurrentCardIndex() > 1) {
+                setCurrentCardIndex(getCurrentCardIndex() - 1);
+                setCurrentCard(getUserCardbox().getCardList().get(getCurrentCardIndex()));
+                currentQuestion.setText(String.valueOf(getCurrentCardIndex()));
+            } else {
+                setCurrentCard(getUserCardbox().getCardList().get(getUserCardbox().getCardList().size() - 1));
+                setCurrentCardIndex(getUserCardbox().getCardList().size());
+                currentQuestion.setText(String.valueOf(getCurrentCardIndex()));
             }
+
+            getQuestionAndAnswerPane().setContent(addQnAVBox());
         });
 
-        buttonNext.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                getQuestionContentBox().getChildren().clear();
-                getAnswerContentBox().getChildren().clear();
+        buttonNext.setOnAction((ActionEvent event) -> {
 
-                if (getCurrentCardIndex() < (getUserCardbox().getCardList().size() - 1)) {
-                    setCurrentCard(getUserCardbox().getCardList().get(getCurrentCardIndex() + 1));
-                } else {
-                    setCurrentCard(getUserCardbox().getCardList().get(0));
-                }
-
-                getQuestionTextArea().setText(getCurrentCardByIndex(0).getQuestion());
-
-                getQuestionContentBox().getChildren().add(getQuestionTextArea());
-                getScrollPaneContent().getChildren().add(createAnswerBox());
+            if (getCurrentCardIndex() < getUserCardbox().getCardList().size()) {
+                setCurrentCard(getUserCardbox().getCardList().get(getCurrentCardIndex()));
+                setCurrentCardIndex(getCurrentCardIndex() + 1);
+                currentQuestion.setText(String.valueOf(getCurrentCardIndex()));
+            } else {
+                setCurrentCard(getUserCardbox().getCardList().get(0));
+                setCurrentCardIndex(1);
+                currentQuestion.setText(String.valueOf(getCurrentCardIndex()));
             }
+
+            getQuestionAndAnswerPane().setContent(addQnAVBox());
+
         });
 
-        String cardboxSize = String.valueOf(getUserCardbox().getCardList().size());
-        String currentIndex = null;
-        if (getCurrentCardIndex() == 0) {
-            currentIndex = String.valueOf(getCurrentCardIndex() + 1);
-        } else {
-            currentIndex = String.valueOf(getCurrentCardIndex());
-        }
-
-        Label currentQuestion = new Label(currentIndex + " / " + cardboxSize);
         currentQuestion.setAlignment(Pos.CENTER);
 
-        hbox.getChildren().addAll(buttonPrevious, buttonNext, currentQuestion);
+        hbox.getChildren().addAll(buttonPrevious, buttonNext, currentQuestion, cardboxSize);
 
         return hbox;
     }
@@ -283,12 +272,9 @@ public class QuestionAndAnswerScene {
         setQuestionTextArea(new TextArea(getCurrentCard().getQuestion()));
         getQuestionTextArea().setMinHeight(500);
 
-        getQuestionTextArea().focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                getQuestionTextArea().setEditable(false);
-                getQuestionTextArea().setWrapText(true);
-            }
+        getQuestionTextArea().focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            getQuestionTextArea().setEditable(false);
+            getQuestionTextArea().setWrapText(true);
         });
 
         setAnswerContentBox(createAnswerBox());
@@ -313,42 +299,34 @@ public class QuestionAndAnswerScene {
 
         Button solutionBtn = new Button("Solution");
         solutionBtn.setMinWidth(100);
-        solutionBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                getCurrentCardByIndex(0).setSolutionGiven(true);
-                getScrollPaneContent().getChildren().remove(getAnswerContentBox());
-                VBox anserbow = addCorrectAnswersBox();
-                anserbow.setDisable(true);
-                getScrollPaneContent().getChildren().add(anserbow);
-
-            }
+        solutionBtn.setOnAction((ActionEvent event) -> {
+            getCurrentCardByIndex(0).setSolutionGiven(true);
+            getScrollPaneContent().getChildren().remove(getAnswerContentBox());
+            VBox anserbow = addCorrectAnswersBox();
+            anserbow.setDisable(true);
+            getScrollPaneContent().getChildren().add(anserbow);
         });
 
         Button finishBtn = new Button("Finish Session");
         finishBtn.setMinWidth(100);
 
-        finishBtn.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (getUserCardbox().getCardList().size() > 1) {
-                    getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
-                }
-                try {
-                    if (MySQLConnection.pst != null) {
-                        MySQLConnection.pst.close();
-                    }
-                    if (MySQLConnection.rst != null) {
-                        MySQLConnection.rst.close();
-                    }
-                    MySQLConnection.closeConnection();
-                } catch (SQLException ex) {
-                    System.out.println(ex.getMessage());
-                    Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.exit(0);
-
+        finishBtn.setOnAction((ActionEvent event) -> {
+            if (getUserCardbox().getCardList().size() > 1) {
+                getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
             }
+            try {
+                if (MySQLConnection.pst != null) {
+                    MySQLConnection.pst.close();
+                }
+                if (MySQLConnection.rst != null) {
+                    MySQLConnection.rst.close();
+                }
+                MySQLConnection.closeConnection();
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
+                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            System.exit(0);
         });
 
         btnMenue.getChildren().addAll(reviseBtn, solutionBtn, finishBtn);
@@ -370,15 +348,11 @@ public class QuestionAndAnswerScene {
                 if (getCurrentCard().isSolutionGiven()) {
                     cb.setSelected(true);
                 }
-                cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                        if (newValue == true) {
-                            getCurrentCard().getAnswer().getIsSelectedMap().replace(key.getKey(), true);
-                        } else if (oldValue == true && newValue == false) {
-                            getCurrentCard().getAnswer().getIsSelectedMap().replace(key.getKey(), false);
-                        }
-
+                cb.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                    if (newValue == true) {
+                        getCurrentCard().getAnswer().getIsSelectedMap().replace(key.getKey(), true);
+                    } else if (oldValue == true && newValue == false) {
+                        getCurrentCard().getAnswer().getIsSelectedMap().replace(key.getKey(), false);
                     }
                 });
                 checkAnswerBox = new HBox(cb, answerLabel);

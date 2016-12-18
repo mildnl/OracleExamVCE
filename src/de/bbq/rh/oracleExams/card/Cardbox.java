@@ -15,6 +15,7 @@ import java.util.logging.Logger;
  * @author $ Lyn Mildner
  */
 public class Cardbox implements IMySQLDatabaseDAO {
+
     private ArrayList<Card> cardList;
 
     public ArrayList<Card> getCardList() {
@@ -24,12 +25,12 @@ public class Cardbox implements IMySQLDatabaseDAO {
     public void setCardList(ArrayList<Card> cardList) {
         this.cardList = cardList;
     }
-    
+
     public Cardbox() {
         this.cardList = new ArrayList<>();
         this.cardList.add(new Card());
     }
-    
+
     public <E> E getCardboxByCategoryID(E elem, int id) {
         Cardbox c = (Cardbox) elem;
         c.getCardList().clear();
@@ -38,8 +39,7 @@ public class Cardbox implements IMySQLDatabaseDAO {
             String sql = "SELECT question_id FROM category2question WHERE category_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
             MySQLConnection.pst.setInt(1, id);
-            ResultSet resultset = null;
-            resultset = MySQLConnection.pst.executeQuery();
+            ResultSet resultset = MySQLConnection.pst.executeQuery();
             while (resultset.next()) {
                 c.getCardList().add(new Card(resultset.getInt("question_id")));
             }
@@ -50,6 +50,15 @@ public class Cardbox implements IMySQLDatabaseDAO {
         return (E) c;
     }
 
+    public Cardbox getCardboxByMultipleCategoryIDs(Cardbox c, ArrayList<Integer> givenCategoryIDs) {
+        c.getCardList().clear();
+        for (Integer categoryID : givenCategoryIDs) {
+            Cardbox categoryCardbox = getCardboxByCategoryID(c, categoryID);
+            c.getCardList().addAll(categoryCardbox.getCardList());
+        }
+        return c;
+    }
+
     @Override
     public <E> E getById(E elem, int id) {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -57,7 +66,7 @@ public class Cardbox implements IMySQLDatabaseDAO {
 
     @Override
     public ArrayList<Card> getAllList() {
-        ArrayList<Card> c =  new ArrayList();
+        ArrayList<Card> c = new ArrayList();
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM question";
@@ -70,7 +79,7 @@ public class Cardbox implements IMySQLDatabaseDAO {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
-        return c; 
+        return c;
     }
 
     @Override
@@ -80,7 +89,7 @@ public class Cardbox implements IMySQLDatabaseDAO {
 
     @Override
     public <E> void update(E elem) {
-        throw new UnsupportedOperationException("Not supported yet."); 
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

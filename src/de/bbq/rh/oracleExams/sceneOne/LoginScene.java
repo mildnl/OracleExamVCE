@@ -141,7 +141,7 @@ public class LoginScene {
                 getActionTarget().setText("Login succsessfull!");
                 setLoggedUser(new User(getUserTextField().getText()));
                 try {
-                    TimeUnit.SECONDS.sleep(2);
+                    TimeUnit.SECONDS.sleep(3);
                 } catch (InterruptedException exc) {
                     System.out.println(exc.getMessage());
                 }
