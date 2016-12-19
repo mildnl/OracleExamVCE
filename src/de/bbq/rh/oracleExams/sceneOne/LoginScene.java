@@ -7,14 +7,12 @@ package de.bbq.rh.oracleExams.sceneOne;
 
 import de.bbq.rh.oracleExams.Main;
 import de.bbq.rh.oracleExams.database.MySQLConnection;
-import de.bbq.rh.oracleExams.sceneThree.QuestionAndAnswerScene;
 import de.bbq.rh.oracleExams.sceneTwo.CardboxSelectionScene;
 import de.bbq.rh.oracleExams.session.User;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -137,21 +135,12 @@ public class LoginScene {
 
         getBtn().setOnAction((ActionEvent e) -> {
             if (loginByUserNameAndPasssword(getUserTextField().getText(), getPasswordBox().getText())) {
-                getActionTarget().setFill(Color.GREEN);
-                getActionTarget().setText("Login succsessfull!");
                 setLoggedUser(new User(getUserTextField().getText()));
-                try {
-                    TimeUnit.SECONDS.sleep(3);
-                } catch (InterruptedException exc) {
-                    System.out.println(exc.getMessage());
-                }
                 CardboxSelectionScene viewTwo = new CardboxSelectionScene(getLoggedUser());
                 Scene viewTwoScene = viewTwo.createSceneTwo(m);
                 m.setCurrentScene(viewTwoScene);
                 m.getStage().setScene(m.getCurrentScene());
             } else {
-                System.out.println("Username: " + getUserTextField().getText());
-                System.out.println("Password: " + getPasswordBox().getText());
                 getActionTarget().setFill(Color.FIREBRICK);
                 getActionTarget().setText("Login Password or Username doesnt match!");
             }
@@ -171,12 +160,7 @@ public class LoginScene {
             MySQLConnection.pst.setString(1, userName);
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                System.out.println("DB UserName: " + MySQLConnection.rst.getString("name"));
-                System.out.println("UserName: " + userName);
-                System.out.println("DB Password: " + MySQLConnection.rst.getString("password"));
-                System.out.println("Password: " + userPassword);
                 if (MySQLConnection.rst.getString("name").equals(userName) && MySQLConnection.rst.getString("password").equals(userPassword)) {
-                    System.out.println("INSIDE");
                     checkPassed = true;
                 }
             }

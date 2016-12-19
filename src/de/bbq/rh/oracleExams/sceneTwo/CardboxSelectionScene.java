@@ -244,12 +244,12 @@ public class CardboxSelectionScene {
             setCategoryCheckBox(new HBox(cb, categoryLabel));
             categoryVBox.getChildren().add(getCategoryCheckBox());
             categoryVBox.setSpacing(10);
-
+            System.out.println("Cardbox Size: " + getCardBoxSize());
         }
         getCheckBoxList().forEach((checkBox) -> {
             checkBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue) -> {
-
+                System.out.println("Cardbox Size: " + getCardBoxSize());
                 if (newValue) {
                     checkBox.setSelected(true);
                     setCardBoxSize(getCardBoxSize()
@@ -259,27 +259,32 @@ public class CardboxSelectionScene {
                     getQuestionSlider().setMax(getCardBoxSize());
                     getSelectedCategoryList().add(getCheckBoxList().
                             indexOf(checkBox) + 1);
-                    System.out.println("CategoryIds: " + getSelectedCategoryList());
                 } else {
                     setCardBoxSize(getCardBoxSize()
                             - getUserCardboxByCategoryId(getCheckBoxList().
                                     indexOf(checkBox)).getCardList().size() + 1);
                     getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
                     getQuestionSlider().setMax(getCardBoxSize());
-                    if (getSelectedCategoryList().size() == 1) {
-                        getSelectedCategoryList().clear();
-                    } else {
-                        getSelectedCategoryList().remove(getCheckBoxList().indexOf(checkBox) + 1);
-                    }
 
-                    System.out.println("CategoryIds: " + getSelectedCategoryList());
+                    switch (getSelectedCategoryList().size()) {
+                        case 1:
+                            getSelectedCategoryList().clear();
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            getSelectedCategoryList().remove(getCheckBoxList().indexOf(checkBox));
+                            break;
+                    }
                 }
             });
         });
 
-        getCheckBoxList().get(1).setOnAction((ActionEvent event) -> {
+        getCheckBoxList()
+                .get(0).setOnAction((ActionEvent event) -> {
             getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
-        });
+        }
+        );
 
         categoryVBox.setAlignment(Pos.CENTER);
 
@@ -318,10 +323,10 @@ public class CardboxSelectionScene {
         getQuestionSlider().setShowTickMarks(true);
         getQuestionSlider().setMajorTickUnit(10);
         getQuestionSlider().setMinorTickCount(5);
+        getQuestionSlider().setMax(getCardBoxSize());
         StackPane sliderRoot = new StackPane(getQuestionSlider());
         sliderRoot.setAlignment(Pos.CENTER);
         sliderRoot.setPadding(new Insets(30, 30, 30, 30));
-        sliderRoot.setMaxWidth(450);
 
 //        getQuestionSlider().layout();
 //        Pane sliderPane = (Pane) getQuestionSlider().lookup(".thumb");
