@@ -3,15 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.bbq.rh.oracleExams.sceneOne;
+package de.bbq.rh.OracleExamVCE.sceneOne;
 
-import de.bbq.rh.oracleExams.Main;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
-import de.bbq.rh.oracleExams.sceneTwo.CardboxSelectionScene;
-import de.bbq.rh.oracleExams.session.User;
+import de.bbq.rh.OracleExamVCE.Main;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
+import de.bbq.rh.OracleExamVCE.sceneTwo.CardboxSelectionScene;
+import de.bbq.rh.OracleExamVCE.session.User;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.concurrent.TimeUnit;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

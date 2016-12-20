@@ -1,13 +1,10 @@
-package de.bbq.rh.oracleExams.card;
+package de.bbq.rh.OracleExamVCE.card;
 
-import de.bbq.rh.oracleExams.database.IMySQLDatabaseDAO;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
-import de.bbq.rh.oracleExams.Test;
+import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -18,8 +15,8 @@ public class Card implements IMySQLDatabaseDAO {
     private int id;
     private String question;
     private Answer answer;
-    private boolean isSelected;
     private boolean solutionGiven;
+    private boolean toBeRevised;
 
     public Category getCat() {
         return this.cat;
@@ -33,12 +30,12 @@ public class Card implements IMySQLDatabaseDAO {
         return this.question;
     }
 
-    public boolean isIsSelected() {
-        return this.isSelected;
-    }
-
     public boolean isSolutionGiven() {
         return this.solutionGiven;
+    }
+
+    public boolean isToBeRevised() {
+        return toBeRevised;
     }
 
     private void setCat(Category cat) {
@@ -53,12 +50,12 @@ public class Card implements IMySQLDatabaseDAO {
         this.question = question;
     }
 
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
     public void setSolutionGiven(boolean solutionGiven) {
         this.solutionGiven = solutionGiven;
+    }
+
+    public void setToBeRevised(boolean toBeRevised) {
+        this.toBeRevised = toBeRevised;
     }
 
     public Answer getAnswer() {
@@ -70,6 +67,8 @@ public class Card implements IMySQLDatabaseDAO {
         this.id = id;
         this.question = questionTextByQuestionID(id);
         this.answer = new Answer(id);
+        this.toBeRevised = false;
+        this.solutionGiven = false;
     }
     
     public Card() {
@@ -95,7 +94,6 @@ public class Card implements IMySQLDatabaseDAO {
             c.answer = (Answer) a.getById(a, id);
 
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return (E) c;
@@ -114,7 +112,6 @@ public class Card implements IMySQLDatabaseDAO {
             } 
 
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return categoryID;
@@ -133,7 +130,6 @@ public class Card implements IMySQLDatabaseDAO {
             } 
 
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return questionText;
@@ -151,7 +147,6 @@ public class Card implements IMySQLDatabaseDAO {
                 c.add(new Card(MySQLConnection.rst.getInt("id")));
             }
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return c; 

@@ -3,24 +3,32 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.bbq.rh.oracleExams.sceneTwo;
+package de.bbq.rh.OracleExamVCE.sceneTwo;
 
-import de.bbq.rh.oracleExams.Main;
-import de.bbq.rh.oracleExams.card.Cardbox;
-import de.bbq.rh.oracleExams.card.Category;
-import de.bbq.rh.oracleExams.sceneThree.QuestionAndAnswerScene;
-import de.bbq.rh.oracleExams.session.Session;
-import de.bbq.rh.oracleExams.session.User;
+import de.bbq.rh.OracleExamVCE.Main;
+import de.bbq.rh.OracleExamVCE.card.Cardbox;
+import de.bbq.rh.OracleExamVCE.card.Category;
+import de.bbq.rh.OracleExamVCE.sceneThree.QuestionAndAnswerScene;
+import de.bbq.rh.OracleExamVCE.session.Session;
+import de.bbq.rh.OracleExamVCE.session.User;
 import java.util.ArrayList;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.HBox;
@@ -196,14 +204,30 @@ public class CardboxSelectionScene {
         setLearnModeBox(learnMode());
 
         StackPane sliderStackPane = createSlider();
+        
+        VBox lowerHalfBox = new VBox();
+
+        HBox chartBox = addChartBox();
+        
+        ScrollPane chartScrollPane = new ScrollPane();
+        chartScrollPane.setMinWidth(1050);
+        chartScrollPane.setMinHeight(700);
+        chartScrollPane.setMaxHeight(900);
+        chartScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        
 
         HBox resetAndStartButtonBox = createButtonBox(m);
-        getSceneTwoContentBox().setMaxWidth(700);
         getSceneTwoContentBox().getChildren().addAll(getTopMenueBox(),
-                getCategoryBox(), sliderStackPane, getLearnModeBox(),
+                getCategoryBox(), sliderStackPane, getLearnModeBox(), chartBox,
                 resetAndStartButtonBox);
-
-        viewTwoRoot.getChildren().addAll(getSceneTwoContentBox());
+        
+//        getSceneTwoContentBox().setMinWidth(700);
+//        getSceneTwoContentBox().setMinHeight(700);
+//        getSceneTwoContentBox().setMaxHeight(700);
+        
+        chartScrollPane.setContent(getSceneTwoContentBox());
+                
+        viewTwoRoot.getChildren().addAll(chartScrollPane);
         setCardboxSelectionScene(new Scene(viewTwoRoot));
         return getCardboxSelectionScene();
     }
@@ -211,9 +235,9 @@ public class CardboxSelectionScene {
     private VBox addTopMenueBox() {
         VBox topMenueVBox = new VBox();
         Label topMenueLabel = new Label("Please choose an Option");
-        topMenueLabel.setMinHeight(60);
+//        topMenueLabel.setMinHeight(60);
         topMenueLabel.setPadding(new Insets(5, 0, 5, 0));
-        topMenueLabel.setMinWidth(710);
+//        topMenueLabel.setMinWidth(700);
 
         topMenueLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         topMenueLabel.setAlignment(Pos.CENTER);
@@ -249,23 +273,24 @@ public class CardboxSelectionScene {
         getCheckBoxList().forEach((checkBox) -> {
             checkBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
                     Boolean newValue) -> {
-                System.out.println("Cardbox Size: " + getCardBoxSize());
                 if (newValue) {
                     checkBox.setSelected(true);
                     setCardBoxSize(getCardBoxSize()
                             + getUserCardboxByCategoryId(getCheckBoxList().
-                                    indexOf(checkBox)).getCardList().size() + 1);
+                                    indexOf(checkBox) + 1).getCardList().size());
                     getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
                     getQuestionSlider().setMax(getCardBoxSize());
                     getSelectedCategoryList().add(getCheckBoxList().
                             indexOf(checkBox) + 1);
+                    System.out.println("Selected Category List: " + getSelectedCategoryList().size());
+                    System.out.println("Selected Category List: " + getSelectedCategoryList().toString());
+                    System.out.println("Cardbox Size: " + getCardBoxSize());
                 } else {
                     setCardBoxSize(getCardBoxSize()
                             - getUserCardboxByCategoryId(getCheckBoxList().
-                                    indexOf(checkBox)).getCardList().size() + 1);
+                                    indexOf(checkBox) + 1).getCardList().size());
                     getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
                     getQuestionSlider().setMax(getCardBoxSize());
-
                     switch (getSelectedCategoryList().size()) {
                         case 1:
                             getSelectedCategoryList().clear();
@@ -276,6 +301,9 @@ public class CardboxSelectionScene {
                             getSelectedCategoryList().remove(getCheckBoxList().indexOf(checkBox));
                             break;
                     }
+                    System.out.println("Selected Category List: " + getSelectedCategoryList().size());
+                    System.out.println("Selected Category List: " + getSelectedCategoryList().toString());
+                    System.out.println("Cardbox Size: " + getCardBoxSize());
                 }
             });
         });
@@ -296,7 +324,7 @@ public class CardboxSelectionScene {
         HBox learnModusBox = new HBox();
 
         learnModusBox.setSpacing(10);
-        learnModusBox.setMinWidth(700);
+//        learnModusBox.setMinWidth(700);
         learnModusBox.setAlignment(Pos.CENTER);
         learnModusBox.setPadding(new Insets(30, 0, 30, 0));
         ToggleButton learnModusButton = new ToggleButton("Learn Mode");
@@ -357,6 +385,7 @@ public class CardboxSelectionScene {
             getCurrentUser().getUserSession().getSessionBox().getCardboxByMultipleCategoryIDs(getCurrentUser().
                     getUserSession().getSessionBox(),
                     getSelectedCategoryList());
+            getCurrentUser().insertUserQuestionsIntoDB(getCurrentUser());
 
             QuestionAndAnswerScene viewTwo = new QuestionAndAnswerScene(getCurrentUser());
             Scene sceneThree = viewTwo.createSceneThree(m);
@@ -369,5 +398,53 @@ public class CardboxSelectionScene {
         ButtonBox.getChildren().addAll(resetButtonBox, startButtonBox);
 
         return ButtonBox;
+    }
+
+    private HBox addChartBox() {
+        HBox chartBox = new HBox();
+
+        ObservableList<PieChart.Data> pieChartData
+                = FXCollections.observableArrayList(
+                        new PieChart.Data("Correct Answers", 13),
+                        new PieChart.Data("Wrong Answers", 25),
+                        new PieChart.Data("To Be Revised", 10),
+                        new PieChart.Data("Solution Given", 22));
+        final PieChart chart = new PieChart(pieChartData);
+        chart.setTitle("Last Session Results");
+
+        chart.setLabelLineLength(10);
+//        chart.setLegendSide(Side.LEFT);
+        
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Number of Month");
+        //creating the chart
+        final LineChart<Number,Number> lineChart = 
+                new LineChart<>(xAxis,yAxis);
+                
+        lineChart.setTitle("Stock Monitoring, 2010");
+        //defining a series
+        XYChart.Series series = new XYChart.Series();
+        series.setName("My portfolio");
+        //populating the series with data
+        series.getData().add(new XYChart.Data(1, 23));
+        series.getData().add(new XYChart.Data(2, 14));
+        series.getData().add(new XYChart.Data(3, 15));
+        series.getData().add(new XYChart.Data(4, 24));
+        series.getData().add(new XYChart.Data(5, 34));
+        series.getData().add(new XYChart.Data(6, 36));
+        series.getData().add(new XYChart.Data(7, 22));
+        series.getData().add(new XYChart.Data(8, 45));
+        series.getData().add(new XYChart.Data(9, 43));
+        series.getData().add(new XYChart.Data(10, 17));
+        series.getData().add(new XYChart.Data(11, 29));
+        series.getData().add(new XYChart.Data(12, 25));
+        
+//        Scene scene  = new Scene(lineChart,800,600);
+        lineChart.getData().add(series);
+        
+        chartBox.getChildren().addAll(chart, lineChart);
+
+        return chartBox;
     }
 }

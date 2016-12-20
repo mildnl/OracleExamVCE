@@ -1,8 +1,8 @@
-package de.bbq.rh.oracleExams.card;
+package de.bbq.rh.OracleExamVCE.card;
 
-import de.bbq.rh.oracleExams.Test;
-import de.bbq.rh.oracleExams.database.IMySQLDatabaseDAO;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
+import de.bbq.rh.OracleExamVCE.Test;
+import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;

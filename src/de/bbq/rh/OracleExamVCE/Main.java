@@ -1,11 +1,8 @@
-package de.bbq.rh.oracleExams;
+package de.bbq.rh.OracleExamVCE;
 
-import de.bbq.rh.oracleExams.card.Cardbox;
-import de.bbq.rh.oracleExams.card.Category;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
-import de.bbq.rh.oracleExams.sceneOne.LoginScene;
-import de.bbq.rh.oracleExams.session.User;
-import de.bbq.rh.oracleExams.sceneThree.QuestionAndAnswerScene;
+
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
+import de.bbq.rh.OracleExamVCE.sceneOne.LoginScene;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;

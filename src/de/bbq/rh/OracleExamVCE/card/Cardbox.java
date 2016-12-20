@@ -1,14 +1,11 @@
-package de.bbq.rh.oracleExams.card;
+package de.bbq.rh.OracleExamVCE.card;
 
-import de.bbq.rh.oracleExams.Test;
-import de.bbq.rh.oracleExams.database.IMySQLDatabaseDAO;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
+import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -44,7 +41,6 @@ public class Cardbox implements IMySQLDatabaseDAO {
                 c.getCardList().add(new Card(resultset.getInt("question_id")));
             }
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return (E) c;
@@ -76,7 +72,6 @@ public class Cardbox implements IMySQLDatabaseDAO {
                 c.add(new Card(MySQLConnection.rst.getInt("id")));
             }
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return c;

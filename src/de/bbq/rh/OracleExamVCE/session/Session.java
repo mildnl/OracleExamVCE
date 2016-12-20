@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package de.bbq.rh.oracleExams.session;
+package de.bbq.rh.OracleExamVCE.session;
 
-import de.bbq.rh.oracleExams.Test;
-import de.bbq.rh.oracleExams.card.Cardbox;
-import de.bbq.rh.oracleExams.database.IMySQLDatabaseDAO;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
+import de.bbq.rh.OracleExamVCE.Test;
+import de.bbq.rh.OracleExamVCE.card.Cardbox;
+import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -115,8 +115,6 @@ public class Session implements IMySQLDatabaseDAO {
             Connection con = MySQLConnection.getConnection();
             String sql = "INSERT INTO category VALUES(null, ?)";
             if (s.getId() == 0) {
-                //1 Object is saved through MySQL
-                //created PK should be returned
                 MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
                 MySQLConnection.pst.setInt(1, s.getId());
                 MySQLConnection.pst.executeUpdate();
@@ -130,4 +128,11 @@ public class Session implements IMySQLDatabaseDAO {
             System.out.println(e.getMessage());
         }
     }
+//    Correct Answers Int Value
+//    Wrong Answers Int Value
+//    To Be Revised Int Value
+//    "Solution Given Int Value
+    
+    
+    
 }

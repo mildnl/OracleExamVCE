@@ -1,8 +1,7 @@
-package de.bbq.rh.oracleExams.card;
+package de.bbq.rh.OracleExamVCE.card;
 
-import de.bbq.rh.oracleExams.database.IMySQLDatabaseDAO;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
-import de.bbq.rh.oracleExams.Test;
+import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -60,7 +59,6 @@ public class Category implements IMySQLDatabaseDAO {
                 categoryName = MySQLConnection.rst.getString("text");
             }         
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return categoryName;
@@ -84,7 +82,6 @@ public class Category implements IMySQLDatabaseDAO {
                 c = new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text"));
             }         
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return (E) c;
@@ -102,7 +99,6 @@ public class Category implements IMySQLDatabaseDAO {
                 categoryName = MySQLConnection.rst.getString("text");
             }         
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return categoryName;
@@ -120,7 +116,6 @@ public class Category implements IMySQLDatabaseDAO {
                 categoryID = MySQLConnection.rst.getInt("category_id");
             }         
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return categoryID;
@@ -138,7 +133,6 @@ public class Category implements IMySQLDatabaseDAO {
                 questionIDList.add(MySQLConnection.rst.getInt("question_id"));
             }         
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return questionIDList;
@@ -156,7 +150,6 @@ public class Category implements IMySQLDatabaseDAO {
                 c.add(new Category(MySQLConnection.rst.getInt("id"), MySQLConnection.rst.getString("text")));
             }
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
         return c;
@@ -208,7 +201,6 @@ public class Category implements IMySQLDatabaseDAO {
                 }  
             }       
         } catch (SQLException e) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
     }   

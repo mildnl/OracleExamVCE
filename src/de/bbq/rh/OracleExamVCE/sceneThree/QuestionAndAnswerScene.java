@@ -1,16 +1,13 @@
-package de.bbq.rh.oracleExams.sceneThree;
+package de.bbq.rh.OracleExamVCE.sceneThree;
 
-import de.bbq.rh.oracleExams.Main;
-import de.bbq.rh.oracleExams.Test;
-import de.bbq.rh.oracleExams.card.Answer;
-import de.bbq.rh.oracleExams.card.Card;
-import de.bbq.rh.oracleExams.card.Cardbox;
-import de.bbq.rh.oracleExams.database.MySQLConnection;
-import de.bbq.rh.oracleExams.session.User;
+import de.bbq.rh.OracleExamVCE.Main;
+import de.bbq.rh.OracleExamVCE.card.Answer;
+import de.bbq.rh.OracleExamVCE.card.Card;
+import de.bbq.rh.OracleExamVCE.card.Cardbox;
+import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
+import de.bbq.rh.OracleExamVCE.session.User;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -291,11 +288,14 @@ public class QuestionAndAnswerScene {
 
         Button reviseBtn = new Button("To be Revised");
         reviseBtn.setMinWidth(100);
-
+        reviseBtn.setOnAction((ActionEvent event) -> {
+            getCurrentCard().setToBeRevised(true);
+        });
+        
         Button solutionBtn = new Button("Solution");
         solutionBtn.setMinWidth(100);
         solutionBtn.setOnAction((ActionEvent event) -> {
-            getCurrentCardByIndex(0).setSolutionGiven(true);
+            getCurrentCard().setSolutionGiven(true);
             getScrollPaneContent().getChildren().remove(getAnswerContentBox());
             VBox anserbow = addCorrectAnswersBox();
             anserbow.setDisable(true);
@@ -319,7 +319,6 @@ public class QuestionAndAnswerScene {
                 MySQLConnection.closeConnection();
             } catch (SQLException ex) {
                 System.out.println(ex.getMessage());
-                Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
             }
             System.exit(0);
         });

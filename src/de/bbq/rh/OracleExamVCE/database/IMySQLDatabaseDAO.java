@@ -1,4 +1,4 @@
-package de.bbq.rh.oracleExams.database;
+package de.bbq.rh.OracleExamVCE.database;
 
 import java.util.ArrayList;
 
