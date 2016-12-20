@@ -128,11 +128,85 @@ public class Session implements IMySQLDatabaseDAO {
             System.out.println(e.getMessage());
         }
     }
-//    Correct Answers Int Value
-//    Wrong Answers Int Value
-//    To Be Revised Int Value
-//    "Solution Given Int Value
-    
-    
-    
+
+    public int fetchCAChartData(Session s) {
+        int correctAnswers = 0;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM again WHERE session_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, s.getId() - 1); //Correct Session Id to be included
+            MySQLConnection.pst.executeQuery();
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                s.id = MySQLConnection.rst.getInt(1);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return correctAnswers;
+    }
+
+    public int fetchWAChartData(Session s) {
+        int correctAnswers = 0;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM again WHERE session_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, s.getId() - 1); //Correct Session Id to be included
+            MySQLConnection.pst.executeQuery();
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                s.id = MySQLConnection.rst.getInt(1);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return correctAnswers;
+    }
+
+    public int fetchSolutionChartData(Session s) {
+        int solvedAnswers = 0;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM again WHERE session_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, s.getId() - 1); //Correct Session Id to be included
+            MySQLConnection.pst.executeQuery();
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                if (MySQLConnection.rst.getString("cheatedOrAgain").equals("S")) {
+                    solvedAnswers += 1;
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return solvedAnswers;
+    }
+
+    public int fetchRevisedChartData(Session s) {
+        int toBeRevisedAnswers = 0;
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT * FROM again WHERE session_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, s.getId()); //Correct Session Id to be included
+            MySQLConnection.pst.executeQuery();
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                if (MySQLConnection.rst.getString("cheatedOrAgain").equals("R")) {
+                    toBeRevisedAnswers += 1;
+                }
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return toBeRevisedAnswers;
+    }
+
 }

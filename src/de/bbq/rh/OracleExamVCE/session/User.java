@@ -23,6 +23,7 @@ public class User {
     private final String name;
     private final String password;
     private Session userSession;
+    private ArrayList<Integer> userSessionsList;
 
     public int getUserID() {
         return this.userID;
@@ -34,6 +35,14 @@ public class User {
 
     public Session getUserSession() {
         return this.userSession;
+    }
+
+    public ArrayList<Integer> getUserSessionsList() {
+        return this.userSessionsList;
+    }
+
+    public void setUserSessionsList(ArrayList<Integer> userSessionsList) {
+        this.userSessionsList = userSessionsList;
     }
 
     public User(int user_id, String name, String password, Session userSession) {
@@ -48,6 +57,7 @@ public class User {
         this.name = fetchUserNameByUserID(userID);
         this.password = fetchUserPasswordByUserID(userID);
         this.userSession = new Session(userID);
+        this.userSessionsList = fetchUserSessionsList(userID);
     }
 
     public User(String userName) {
@@ -212,5 +222,22 @@ public class User {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private ArrayList<Integer> fetchUserSessionsList(int userID) {
+        ArrayList<Integer> sessionsList = new ArrayList<>();
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT id FROM session WHERE user_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, userID);
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                sessionsList.add(MySQLConnection.rst.getInt("id"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return sessionsList;
     }
 }
