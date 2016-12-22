@@ -5,7 +5,7 @@
  */
 package de.bbq.rh.OracleExamVCE.session;
 
-import de.bbq.rh.OracleExamVCE.card.Card;
+import de.bbq.rh.OracleExamVCE.cardbox.Card;
 import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -146,25 +146,8 @@ public class User {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        insertSessionTUserAnswersIDIntoDB(u.getUserSession().getId(), userAnswerList);
-    }
-
-    private void insertSessionTUserAnswersIDIntoDB(int sessionID, ArrayList<Integer> userAnswerList) {
-        try {
-            Connection con = MySQLConnection.getConnection();
-            String sql = "INSERT INTO lmildner_OCP6.`session2useranswer` (`session_id`, `userAnswer_id`) \n"
-                    + "	VALUES (?, ?)";
-            MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-
-            for (Integer answerID : userAnswerList) {
-                MySQLConnection.pst.setInt(1, sessionID);
-                MySQLConnection.pst.setInt(2, answerID);
-                MySQLConnection.pst.executeUpdate();
-            }
-
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
+        
+        insertSessionTAgainIntoDB(u);
     }
 
     public void insertSessionTAgainIntoDB(User u) {

@@ -6,12 +6,13 @@
 package de.bbq.rh.OracleExamVCE.sceneTwo;
 
 import de.bbq.rh.OracleExamVCE.Main;
-import de.bbq.rh.OracleExamVCE.card.Cardbox;
-import de.bbq.rh.OracleExamVCE.card.Category;
+import de.bbq.rh.OracleExamVCE.cardbox.Cardbox;
+import de.bbq.rh.OracleExamVCE.cardbox.Category;
 import de.bbq.rh.OracleExamVCE.sceneThree.QuestionAndAnswerScene;
 import de.bbq.rh.OracleExamVCE.session.Session;
 import de.bbq.rh.OracleExamVCE.session.User;
 import java.util.ArrayList;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,9 +32,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -54,6 +58,7 @@ public class CardboxSelectionScene {
     private VBox categoryBox;
     private HBox learnModeBox;
     private Slider questionSlider;
+    private Label sliderLabel;
     private ArrayList<CheckBox> checkBoxList;
 
     public User getCurrentUser() {
@@ -98,6 +103,10 @@ public class CardboxSelectionScene {
 
     public Slider getQuestionSlider() {
         return this.questionSlider;
+    }
+
+    public Label getSliderLabel() {
+        return this.sliderLabel;
     }
 
     public ArrayList<CheckBox> getCheckBoxList() {
@@ -148,6 +157,10 @@ public class CardboxSelectionScene {
         this.questionSlider = questionSlider;
     }
 
+    public void setSliderLabel(Label sliderLabel) {
+        this.sliderLabel = sliderLabel;
+    }
+
     public void setCheckBoxList(ArrayList<CheckBox> checkBoxList) {
         this.checkBoxList = checkBoxList;
     }
@@ -172,7 +185,7 @@ public class CardboxSelectionScene {
             ArrayList<Integer> selectedCategoryList, Label maxQuestionLabel,
             Scene CardboxSelectionScene, HBox categoryCheckBox,
             VBox sceneTwoContentBox, VBox topMenueBox, VBox categoryBox,
-            HBox learnModeBox, Slider questionSlider,
+            HBox learnModeBox, Slider questionSlider, Label sliderLabel,
             ArrayList<CheckBox> checkBoxList) {
 
         this.currentUser = currentUser;
@@ -186,12 +199,13 @@ public class CardboxSelectionScene {
         this.categoryBox = categoryBox;
         this.learnModeBox = learnModeBox;
         this.questionSlider = questionSlider;
+        this.sliderLabel = sliderLabel;
         this.checkBoxList = checkBoxList;
     }
 
     public CardboxSelectionScene(User currentUser) {
         this(currentUser, 0, new ArrayList<Integer>(), new Label(), null, null, new VBox(), null, null,
-                null, null, new ArrayList<>());
+                null, null, null, new ArrayList<>());
     }
 
     public Scene createSceneTwo(Main m) {
@@ -204,29 +218,31 @@ public class CardboxSelectionScene {
         setLearnModeBox(learnMode());
 
         StackPane sliderStackPane = createSlider();
-        
+
         VBox lowerHalfBox = new VBox();
 
-        HBox chartBox = addChartBox();
-        
+//        HBox chartBox = addChartBox();
         ScrollPane chartScrollPane = new ScrollPane();
-        chartScrollPane.setMinWidth(1050);
+        chartScrollPane.setMinWidth(660);
         chartScrollPane.setMinHeight(700);
-        chartScrollPane.setMaxHeight(900);
+        chartScrollPane.setMaxHeight(700);
         chartScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        
 
         HBox resetAndStartButtonBox = createButtonBox(m);
         getSceneTwoContentBox().getChildren().addAll(getTopMenueBox(),
-                getCategoryBox(), sliderStackPane, getLearnModeBox(), chartBox,
+                getCategoryBox(), sliderStackPane, getLearnModeBox(),
                 resetAndStartButtonBox);
-        
+
+        if (Platform.isImplicitExit()) {
+            System.out.println("Scene 3 - Saved answers into DB");
+            getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
+        }
+
 //        getSceneTwoContentBox().setMinWidth(700);
 //        getSceneTwoContentBox().setMinHeight(700);
 //        getSceneTwoContentBox().setMaxHeight(700);
-        
         chartScrollPane.setContent(getSceneTwoContentBox());
-                
+
         viewTwoRoot.getChildren().addAll(chartScrollPane);
         setCardboxSelectionScene(new Scene(viewTwoRoot));
         return getCardboxSelectionScene();
@@ -268,7 +284,6 @@ public class CardboxSelectionScene {
             setCategoryCheckBox(new HBox(cb, categoryLabel));
             categoryVBox.getChildren().add(getCategoryCheckBox());
             categoryVBox.setSpacing(10);
-            System.out.println("Cardbox Size: " + getCardBoxSize());
         }
         getCheckBoxList().forEach((checkBox) -> {
             checkBox.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue,
@@ -279,12 +294,12 @@ public class CardboxSelectionScene {
                             + getUserCardboxByCategoryId(getCheckBoxList().
                                     indexOf(checkBox) + 1).getCardList().size());
                     getMaxQuestionLabel().setText(String.valueOf(getCardBoxSize()));
+                    getQuestionSlider().setVisible(true);
+                    getQuestionSlider().setValue(5);
                     getQuestionSlider().setMax(getCardBoxSize());
                     getSelectedCategoryList().add(getCheckBoxList().
                             indexOf(checkBox) + 1);
-                    System.out.println("Selected Category List: " + getSelectedCategoryList().size());
-                    System.out.println("Selected Category List: " + getSelectedCategoryList().toString());
-                    System.out.println("Cardbox Size: " + getCardBoxSize());
+                    
                 } else {
                     setCardBoxSize(getCardBoxSize()
                             - getUserCardboxByCategoryId(getCheckBoxList().
@@ -296,14 +311,12 @@ public class CardboxSelectionScene {
                             getSelectedCategoryList().clear();
                             break;
                         case 0:
+                            getQuestionSlider().setVisible(false);
                             break;
                         default:
                             getSelectedCategoryList().remove(getCheckBoxList().indexOf(checkBox));
                             break;
                     }
-                    System.out.println("Selected Category List: " + getSelectedCategoryList().size());
-                    System.out.println("Selected Category List: " + getSelectedCategoryList().toString());
-                    System.out.println("Cardbox Size: " + getCardBoxSize());
                 }
             });
         });
@@ -351,17 +364,19 @@ public class CardboxSelectionScene {
         getQuestionSlider().setShowTickMarks(true);
         getQuestionSlider().setMajorTickUnit(10);
         getQuestionSlider().setMinorTickCount(5);
-        getQuestionSlider().setMax(getCardBoxSize());
+        getQuestionSlider().setVisible(false);
         StackPane sliderRoot = new StackPane(getQuestionSlider());
         sliderRoot.setAlignment(Pos.CENTER);
         sliderRoot.setPadding(new Insets(30, 30, 30, 30));
 
-//        getQuestionSlider().layout();
-//        Pane sliderPane = (Pane) getQuestionSlider().lookup(".thumb");
-//        Label sliderLabel = new Label();
-//        sliderLabel.textProperty().bind(getQuestionSlider().valueProperty().asString("%.0f"));
-//
-//        sliderPane.getChildren().addAll(sliderLabel);
+//        Scene scene = new Scene(sliderRoot);
+//        Pane thumb = (Pane) getQuestionSlider().lookup(".thumb");
+//        thumb.setEffect(new DropShadow(8, 4, 4, Color.GRAY));
+        setSliderLabel(new Label());
+
+        getSliderLabel().textProperty().bind(getQuestionSlider().valueProperty().asString("%.0f"));
+//        thumb.getChildren().addAll(getSliderLabel());
+
         return sliderRoot;
 
     }
@@ -382,9 +397,15 @@ public class CardboxSelectionScene {
         });
         Button startBtn = new Button("Start Session");
         startBtn.setOnAction((ActionEvent event) -> {
-            getCurrentUser().getUserSession().getSessionBox().getCardboxByMultipleCategoryIDs(getCurrentUser().
-                    getUserSession().getSessionBox(),
-                    getSelectedCategoryList());
+            if (!getSelectedCategoryList().isEmpty()) {
+                getCurrentUser().getUserSession().setSessionBox(getCurrentUser().getUserSession().getSessionBox().getCardboxByMultipleCategoryIDs(getCurrentUser().
+                        getUserSession().getSessionBox(),
+                        getSelectedCategoryList(), getQuestionSlider().getValue()));
+            } else {
+                getCurrentUser().getUserSession().getSessionBox().getCardList().clear();
+                getCurrentUser().getUserSession().setSessionBox(new Cardbox(getCurrentUser().getUserSession().getSessionBox().getAllList()));
+            }
+
             getCurrentUser().insertUserQuestionsIntoDB(getCurrentUser());
 
             QuestionAndAnswerScene viewTwo = new QuestionAndAnswerScene(getCurrentUser());
@@ -403,48 +424,77 @@ public class CardboxSelectionScene {
     private HBox addChartBox() {
         HBox chartBox = new HBox();
 
-        ObservableList<PieChart.Data> pieChartData
-                = FXCollections.observableArrayList(
-                        new PieChart.Data("Correct Answers", 13),
-                        new PieChart.Data("Wrong Answers", 25),
-                        new PieChart.Data("To Be Revised", 10),
-                        new PieChart.Data("Solution Given", 22));
-        final PieChart chart = new PieChart(pieChartData);
-        chart.setTitle("Last Session Results");
-
-        chart.setLabelLineLength(10);
-//        chart.setLegendSide(Side.LEFT);
-        
-        final NumberAxis xAxis = new NumberAxis();
-        final NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Number of Month");
-        //creating the chart
-        final LineChart<Number,Number> lineChart = 
-                new LineChart<>(xAxis,yAxis);
-                
-        lineChart.setTitle("Stock Monitoring, 2010");
-        //defining a series
-        XYChart.Series series = new XYChart.Series();
-        series.setName("My portfolio");
-        //populating the series with data
-        series.getData().add(new XYChart.Data(1, 23));
-        series.getData().add(new XYChart.Data(2, 14));
-        series.getData().add(new XYChart.Data(3, 15));
-        series.getData().add(new XYChart.Data(4, 24));
-        series.getData().add(new XYChart.Data(5, 34));
-        series.getData().add(new XYChart.Data(6, 36));
-        series.getData().add(new XYChart.Data(7, 22));
-        series.getData().add(new XYChart.Data(8, 45));
-        series.getData().add(new XYChart.Data(9, 43));
-        series.getData().add(new XYChart.Data(10, 17));
-        series.getData().add(new XYChart.Data(11, 29));
-        series.getData().add(new XYChart.Data(12, 25));
-        
-//        Scene scene  = new Scene(lineChart,800,600);
-        lineChart.getData().add(series);
-        
-        chartBox.getChildren().addAll(chart, lineChart);
-
+//        ObservableList<PieChart.Data> pieChartData
+//                = FXCollections.observableArrayList(
+//                        new PieChart.Data("Correct Answers", getCurrentUser().
+//                                getUserSession().fetchChartData(getCurrentUser().
+//                                getUserSession(), 
+//                                        getCurrentUser().getUserSessionsList().
+//                                                get(getCurrentUser().
+//                                                        getUserSessionsList().
+//                                                        size()-2)).get(2)),
+//                        new PieChart.Data("Wrong Answers", getCurrentUser().
+//                                getUserSession().fetchChartData(getCurrentUser().
+//                                getUserSession(), 
+//                                        getCurrentUser().getUserSessionsList().
+//                                                get(getCurrentUser().
+//                                                        getUserSessionsList().
+//                                                        size()-2)).get(1)),
+//                        new PieChart.Data("To Be Revised", getCurrentUser().
+//                                getUserSession().fetchRevisedChartData(getCurrentUser().
+//                                getUserSession(), 
+//                                        getCurrentUser().getUserSessionsList().
+//                                                get(getCurrentUser().
+//                                                        getUserSessionsList().
+//                                                        size()-2))),
+//                        new PieChart.Data("Solution Given", getCurrentUser().
+//                                getUserSession().fetchSolutionChartData(getCurrentUser().
+//                                getUserSession(), 
+//                                        getCurrentUser().getUserSessionsList().
+//                                                get(getCurrentUser().
+//                                                        getUserSessionsList().
+//                                                        size()-2))));
+//        final PieChart chart = new PieChart(pieChartData);
+//        chart.setTitle("Last Session Results");
+//        
+//        chart.setLabelLineLength(10);
+////        chart.setLegendSide(Side.LEFT);
+//        
+//        final NumberAxis xAxis = new NumberAxis();
+//        final NumberAxis yAxis = new NumberAxis();
+//        xAxis.setLabel("Number of Month");
+//        //creating the chart
+//        final LineChart<Number, Number> lineChart
+//                = new LineChart<>(xAxis, yAxis);
+//        
+//        lineChart.setTitle("Answers by Sessions");
+//        //defining a series
+//        XYChart.Series series = new XYChart.Series();
+//        series.setName("Session Data");
+//        //populating the series with data
+//        for (Integer sessionId : getCurrentUser().getUserSessionsList()) {
+//            series.getData().add(new XYChart.Data(sessionId, getCurrentUser().
+//                                getUserSession().fetchChartData(getCurrentUser().
+//                                getUserSession(), 
+//                                        sessionId)));
+//        }
+////        series.getData().add(new XYChart.Data(1, 23));
+////        series.getData().add(new XYChart.Data(2, 14));
+////        series.getData().add(new XYChart.Data(3, 15));
+////        series.getData().add(new XYChart.Data(4, 24));
+////        series.getData().add(new XYChart.Data(5, 34));
+////        series.getData().add(new XYChart.Data(6, 36));
+////        series.getData().add(new XYChart.Data(7, 22));
+////        series.getData().add(new XYChart.Data(8, 45));
+////        series.getData().add(new XYChart.Data(9, 43));
+////        series.getData().add(new XYChart.Data(10, 17));
+////        series.getData().add(new XYChart.Data(11, 29));
+////        series.getData().add(new XYChart.Data(12, 25));
+//
+////        Scene scene  = new Scene(lineChart,800,600);
+//        lineChart.getData().add(series);
+//        
+//        chartBox.getChildren().addAll(chart, lineChart);
         return chartBox;
     }
 }

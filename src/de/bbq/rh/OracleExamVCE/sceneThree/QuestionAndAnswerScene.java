@@ -1,13 +1,14 @@
 package de.bbq.rh.OracleExamVCE.sceneThree;
 
 import de.bbq.rh.OracleExamVCE.Main;
-import de.bbq.rh.OracleExamVCE.card.Answer;
-import de.bbq.rh.OracleExamVCE.card.Card;
-import de.bbq.rh.OracleExamVCE.card.Cardbox;
+import de.bbq.rh.OracleExamVCE.cardbox.Answer;
+import de.bbq.rh.OracleExamVCE.cardbox.Card;
+import de.bbq.rh.OracleExamVCE.cardbox.Cardbox;
 import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import de.bbq.rh.OracleExamVCE.session.User;
 import java.sql.SQLException;
 import java.util.Map;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -168,6 +169,11 @@ public class QuestionAndAnswerScene {
         viewContentBox.getChildren().addAll(getTopBarBox(), getQuestionAndAnswerPane(), getButtomMenueBox());
 
         viewThreeRoot.getChildren().add(viewContentBox);
+        
+        if (Platform.isImplicitExit()) {
+            System.out.println("Scene 3 - Saved answers into DB");
+            getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
+        }
 
         return viewThreeScene;
     }
@@ -291,7 +297,7 @@ public class QuestionAndAnswerScene {
         reviseBtn.setOnAction((ActionEvent event) -> {
             getCurrentCard().setToBeRevised(true);
         });
-        
+
         Button solutionBtn = new Button("Solution");
         solutionBtn.setMinWidth(100);
         solutionBtn.setOnAction((ActionEvent event) -> {
@@ -306,9 +312,9 @@ public class QuestionAndAnswerScene {
         finishBtn.setMinWidth(100);
 
         finishBtn.setOnAction((ActionEvent event) -> {
-            if (getUserCardbox().getCardList().size() > 1) {
-                getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
-            }
+
+            getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
+
             try {
                 if (MySQLConnection.pst != null) {
                     MySQLConnection.pst.close();

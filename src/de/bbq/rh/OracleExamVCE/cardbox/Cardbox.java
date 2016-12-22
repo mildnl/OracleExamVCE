@@ -1,4 +1,4 @@
-package de.bbq.rh.OracleExamVCE.card;
+package de.bbq.rh.OracleExamVCE.cardbox;
 
 import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
 import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
@@ -20,6 +20,10 @@ public class Cardbox implements IMySQLDatabaseDAO {
     }
 
     public void setCardList(ArrayList<Card> cardList) {
+        this.cardList = cardList;
+    }
+
+    public Cardbox(ArrayList<Card> cardList) {
         this.cardList = cardList;
     }
 
@@ -46,12 +50,44 @@ public class Cardbox implements IMySQLDatabaseDAO {
         return (E) c;
     }
 
-    public Cardbox getCardboxByMultipleCategoryIDs(Cardbox c, ArrayList<Integer> givenCategoryIDs) {
+    public <E> E getPartialCardboxByCategoryID(E elem, int id, int questionQuantity) {
+        Cardbox c = (Cardbox) elem;
         c.getCardList().clear();
-        for (Integer categoryID : givenCategoryIDs) {
-            Cardbox categoryCardbox = getCardboxByCategoryID(c, categoryID);
-            c.getCardList().addAll(categoryCardbox.getCardList());
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT question_id FROM category2question WHERE category_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, id);
+            ResultSet resultset = MySQLConnection.pst.executeQuery();
+            while (resultset.next()) {
+                if (questionQuantity != 0) {
+                    c.getCardList().add(new Card(resultset.getInt("question_id")));
+                    questionQuantity--;
+                }
+
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
+        return (E) c;
+    }
+
+    public Cardbox getCardboxByMultipleCategoryIDs(Cardbox c, ArrayList<Integer> givenCategoryIDs, double questionQuantity) {
+        int thumbValue = (int) questionQuantity;
+        c.getCardList().clear();
+        if (questionQuantity == 0) {
+            for (Integer categoryID : givenCategoryIDs) {
+                Cardbox categoryCardbox = getCardboxByCategoryID(new Cardbox(), categoryID);
+                c.getCardList().addAll(categoryCardbox.getCardList());
+            }
+        } else {
+            thumbValue = thumbValue / givenCategoryIDs.size();
+            for (Integer categoryID : givenCategoryIDs) {
+                Cardbox categoryCardbox = getPartialCardboxByCategoryID(new Cardbox(), categoryID, thumbValue);
+                c.getCardList().addAll(categoryCardbox.getCardList());
+            }
+        }
+
         return c;
     }
 

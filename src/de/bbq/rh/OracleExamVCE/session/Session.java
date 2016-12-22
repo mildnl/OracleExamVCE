@@ -6,7 +6,7 @@
 package de.bbq.rh.OracleExamVCE.session;
 
 import de.bbq.rh.OracleExamVCE.Test;
-import de.bbq.rh.OracleExamVCE.card.Cardbox;
+import de.bbq.rh.OracleExamVCE.cardbox.Cardbox;
 import de.bbq.rh.OracleExamVCE.database.IMySQLDatabaseDAO;
 import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import java.sql.Connection;
@@ -128,52 +128,86 @@ public class Session implements IMySQLDatabaseDAO {
             System.out.println(e.getMessage());
         }
     }
-
-    public int fetchCAChartData(Session s) {
-        int correctAnswers = 0;
+    
+    public ArrayList<Double> fetchChartData(Session s, int sessionID) {
+        ArrayList<Double> chartData = new ArrayList<>(fetchCAChartData(s, sessionID));
+        chartData.set(2, chartData.get(0) - chartData.get(1));
+        return chartData;
+    }
+    
+    private ArrayList<Double> fetchTotalQuestionsChartData(Session s, int sessionID) {
+        ArrayList<Double> chartData = new ArrayList<>();
+        double totalQuestions = 0;
+        chartData.add(totalQuestions);
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM again WHERE session_id = ?";
+            String sql = "SELECT question_id FROM session2question WHERE session_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
-            MySQLConnection.pst.setInt(1, s.getId() - 1); //Correct Session Id to be included
+            MySQLConnection.pst.setInt(1, sessionID);
             MySQLConnection.pst.executeQuery();
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                s.id = MySQLConnection.rst.getInt(1);
+                MySQLConnection.rst.getInt(1);
+                chartData.set(0, totalQuestions += 1);
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
-        return correctAnswers;
+        return chartData;
     }
 
-    public int fetchWAChartData(Session s) {
-        int correctAnswers = 0;
+    private ArrayList<Double> fetchCAChartData(Session s, int sessionID) {
+        ArrayList<Double> chartData = new ArrayList<>(fetchWAChartData(s, sessionID));
+        double correctAnswers = 0;
+        chartData.add(correctAnswers);
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "SELECT * FROM again WHERE session_id = ?";
+            String sql = "SELECT question_id FROM again WHERE session_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
-            MySQLConnection.pst.setInt(1, s.getId() - 1); //Correct Session Id to be included
+            MySQLConnection.pst.setInt(1, sessionID);
             MySQLConnection.pst.executeQuery();
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
-                s.id = MySQLConnection.rst.getInt(1);
+                MySQLConnection.rst.getInt(1);
+                chartData.set(2, correctAnswers += 1);
             }
         } catch (SQLException e) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
             System.out.println(e.getMessage());
         }
-        return correctAnswers;
+        return chartData;
     }
 
-    public int fetchSolutionChartData(Session s) {
+    private ArrayList<Double> fetchWAChartData(Session s, int sessionID) {
+        ArrayList<Double> chartData = new ArrayList<>(fetchTotalQuestionsChartData(s, sessionID));
+        double wrongAnswers = 0;
+        chartData.add(wrongAnswers);
+        try {
+            Connection con = MySQLConnection.getConnection();
+            String sql = "SELECT question_id FROM again WHERE session_id = ?";
+            MySQLConnection.pst = con.prepareStatement(sql);
+            MySQLConnection.pst.setInt(1, sessionID);
+            MySQLConnection.pst.executeQuery();
+            MySQLConnection.rst = MySQLConnection.pst.executeQuery();
+            while (MySQLConnection.rst.next()) {
+                MySQLConnection.rst.getInt(1);
+                chartData.set(1, wrongAnswers += 1);
+            }
+        } catch (SQLException e) {
+            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, e);
+            System.out.println(e.getMessage());
+        }
+        return chartData;
+    }
+
+    public int fetchSolutionChartData(Session s, int sessionID) {
         int solvedAnswers = 0;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM again WHERE session_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
-            MySQLConnection.pst.setInt(1, s.getId() - 1); //Correct Session Id to be included
+            MySQLConnection.pst.setInt(1, sessionID);
             MySQLConnection.pst.executeQuery();
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
@@ -188,13 +222,13 @@ public class Session implements IMySQLDatabaseDAO {
         return solvedAnswers;
     }
 
-    public int fetchRevisedChartData(Session s) {
+    public int fetchRevisedChartData(Session s, int sessionID) {
         int toBeRevisedAnswers = 0;
         try {
             Connection con = MySQLConnection.getConnection();
             String sql = "SELECT * FROM again WHERE session_id = ?";
             MySQLConnection.pst = con.prepareStatement(sql);
-            MySQLConnection.pst.setInt(1, s.getId()); //Correct Session Id to be included
+            MySQLConnection.pst.setInt(1, sessionID);
             MySQLConnection.pst.executeQuery();
             MySQLConnection.rst = MySQLConnection.pst.executeQuery();
             while (MySQLConnection.rst.next()) {
