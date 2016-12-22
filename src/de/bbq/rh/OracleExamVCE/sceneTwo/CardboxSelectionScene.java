@@ -14,30 +14,20 @@ import de.bbq.rh.OracleExamVCE.session.User;
 import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.chart.LineChart;
-import javafx.scene.chart.NumberAxis;
-import javafx.scene.chart.PieChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
@@ -221,11 +211,9 @@ public class CardboxSelectionScene {
 
         VBox lowerHalfBox = new VBox();
 
-//        HBox chartBox = addChartBox();
         ScrollPane chartScrollPane = new ScrollPane();
         chartScrollPane.setMinWidth(660);
         chartScrollPane.setMinHeight(700);
-        chartScrollPane.setMaxHeight(700);
         chartScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         HBox resetAndStartButtonBox = createButtonBox(m);
@@ -238,9 +226,8 @@ public class CardboxSelectionScene {
             getCurrentUser().insertUserAnswersIDIntoDB(getCurrentUser());
         }
 
-//        getSceneTwoContentBox().setMinWidth(700);
-//        getSceneTwoContentBox().setMinHeight(700);
-//        getSceneTwoContentBox().setMaxHeight(700);
+        getSceneTwoContentBox().setMinWidth(700);
+        getSceneTwoContentBox().setMinHeight(600);
         chartScrollPane.setContent(getSceneTwoContentBox());
 
         viewTwoRoot.getChildren().addAll(chartScrollPane);
@@ -251,9 +238,9 @@ public class CardboxSelectionScene {
     private VBox addTopMenueBox() {
         VBox topMenueVBox = new VBox();
         Label topMenueLabel = new Label("Please choose an Option");
-//        topMenueLabel.setMinHeight(60);
+        topMenueLabel.setMinHeight(60);
         topMenueLabel.setPadding(new Insets(5, 0, 5, 0));
-//        topMenueLabel.setMinWidth(700);
+        topMenueLabel.setMinWidth(700);
 
         topMenueLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
         topMenueLabel.setAlignment(Pos.CENTER);
@@ -337,7 +324,7 @@ public class CardboxSelectionScene {
         HBox learnModusBox = new HBox();
 
         learnModusBox.setSpacing(10);
-//        learnModusBox.setMinWidth(700);
+        learnModusBox.setMinWidth(700);
         learnModusBox.setAlignment(Pos.CENTER);
         learnModusBox.setPadding(new Insets(30, 0, 30, 0));
         ToggleButton learnModusButton = new ToggleButton("Learn Mode");
@@ -369,13 +356,9 @@ public class CardboxSelectionScene {
         sliderRoot.setAlignment(Pos.CENTER);
         sliderRoot.setPadding(new Insets(30, 30, 30, 30));
 
-//        Scene scene = new Scene(sliderRoot);
-//        Pane thumb = (Pane) getQuestionSlider().lookup(".thumb");
-//        thumb.setEffect(new DropShadow(8, 4, 4, Color.GRAY));
         setSliderLabel(new Label());
 
         getSliderLabel().textProperty().bind(getQuestionSlider().valueProperty().asString("%.0f"));
-//        thumb.getChildren().addAll(getSliderLabel());
 
         return sliderRoot;
 
@@ -419,82 +402,5 @@ public class CardboxSelectionScene {
         ButtonBox.getChildren().addAll(resetButtonBox, startButtonBox);
 
         return ButtonBox;
-    }
-
-    private HBox addChartBox() {
-        HBox chartBox = new HBox();
-
-//        ObservableList<PieChart.Data> pieChartData
-//                = FXCollections.observableArrayList(
-//                        new PieChart.Data("Correct Answers", getCurrentUser().
-//                                getUserSession().fetchChartData(getCurrentUser().
-//                                getUserSession(), 
-//                                        getCurrentUser().getUserSessionsList().
-//                                                get(getCurrentUser().
-//                                                        getUserSessionsList().
-//                                                        size()-2)).get(2)),
-//                        new PieChart.Data("Wrong Answers", getCurrentUser().
-//                                getUserSession().fetchChartData(getCurrentUser().
-//                                getUserSession(), 
-//                                        getCurrentUser().getUserSessionsList().
-//                                                get(getCurrentUser().
-//                                                        getUserSessionsList().
-//                                                        size()-2)).get(1)),
-//                        new PieChart.Data("To Be Revised", getCurrentUser().
-//                                getUserSession().fetchRevisedChartData(getCurrentUser().
-//                                getUserSession(), 
-//                                        getCurrentUser().getUserSessionsList().
-//                                                get(getCurrentUser().
-//                                                        getUserSessionsList().
-//                                                        size()-2))),
-//                        new PieChart.Data("Solution Given", getCurrentUser().
-//                                getUserSession().fetchSolutionChartData(getCurrentUser().
-//                                getUserSession(), 
-//                                        getCurrentUser().getUserSessionsList().
-//                                                get(getCurrentUser().
-//                                                        getUserSessionsList().
-//                                                        size()-2))));
-//        final PieChart chart = new PieChart(pieChartData);
-//        chart.setTitle("Last Session Results");
-//        
-//        chart.setLabelLineLength(10);
-////        chart.setLegendSide(Side.LEFT);
-//        
-//        final NumberAxis xAxis = new NumberAxis();
-//        final NumberAxis yAxis = new NumberAxis();
-//        xAxis.setLabel("Number of Month");
-//        //creating the chart
-//        final LineChart<Number, Number> lineChart
-//                = new LineChart<>(xAxis, yAxis);
-//        
-//        lineChart.setTitle("Answers by Sessions");
-//        //defining a series
-//        XYChart.Series series = new XYChart.Series();
-//        series.setName("Session Data");
-//        //populating the series with data
-//        for (Integer sessionId : getCurrentUser().getUserSessionsList()) {
-//            series.getData().add(new XYChart.Data(sessionId, getCurrentUser().
-//                                getUserSession().fetchChartData(getCurrentUser().
-//                                getUserSession(), 
-//                                        sessionId)));
-//        }
-////        series.getData().add(new XYChart.Data(1, 23));
-////        series.getData().add(new XYChart.Data(2, 14));
-////        series.getData().add(new XYChart.Data(3, 15));
-////        series.getData().add(new XYChart.Data(4, 24));
-////        series.getData().add(new XYChart.Data(5, 34));
-////        series.getData().add(new XYChart.Data(6, 36));
-////        series.getData().add(new XYChart.Data(7, 22));
-////        series.getData().add(new XYChart.Data(8, 45));
-////        series.getData().add(new XYChart.Data(9, 43));
-////        series.getData().add(new XYChart.Data(10, 17));
-////        series.getData().add(new XYChart.Data(11, 29));
-////        series.getData().add(new XYChart.Data(12, 25));
-//
-////        Scene scene  = new Scene(lineChart,800,600);
-//        lineChart.getData().add(series);
-//        
-//        chartBox.getChildren().addAll(chart, lineChart);
-        return chartBox;
     }
 }
