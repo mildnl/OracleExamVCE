@@ -1,6 +1,5 @@
 package de.bbq.rh.OracleExamVCE;
 
-
 import de.bbq.rh.OracleExamVCE.database.MySQLConnection;
 import de.bbq.rh.OracleExamVCE.sceneOne.LoginScene;
 import java.sql.SQLException;
@@ -13,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
+
     private Scene currentScene;
     private Stage stage;
 
@@ -36,7 +36,7 @@ public class Main extends Application {
         this.currentScene = currentScene;
         this.stage = stage;
     }
-    
+
     public Main() {
         this(null, null);
     }
@@ -56,7 +56,7 @@ public class Main extends Application {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -64,14 +64,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
         setStage(primaryStage);
-        
+
         primaryStage.setTitle("Oracle Exam VCE Player");
         primaryStage.setMinHeight(800);
         primaryStage.setMinWidth(660);
-        
+
         LoginScene loginView = new LoginScene();
         setCurrentScene(loginView.createLoginView(this));
-        
+
         primaryStage.setScene(getCurrentScene());
 
         primaryStage.show();

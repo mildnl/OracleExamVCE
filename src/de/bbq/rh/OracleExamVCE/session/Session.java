@@ -58,7 +58,7 @@ public class Session implements IMySQLDatabaseDAO {
     private void insertSessionIDByUserID(int userID) {
         try {
             Connection con = MySQLConnection.getConnection();
-            String sql = "INSERT INTO lmildner_OCP6.`session` (`begin`, user_id) \n"
+            String sql = "INSERT INTO session (`begin`, user_id) \n"
                     + "	VALUES (CURRENT_TIMESTAMP, ?)";
             MySQLConnection.pst = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
             MySQLConnection.pst.setInt(1, userID); //Die 1 bedeutet das erste "?" des INSERT Statments

@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -27,7 +25,7 @@ public class MySQLConnection implements IMySQLDatabaseDAO {
                 con = DriverManager.getConnection(URL, USER, PASSWORD);
                 System.out.println("Connection established.");
             } catch (SQLException ex) {
-                Logger.getLogger(MySQLConnection.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("Connection failed! \n \n SQL Exception " + ex.getMessage() + "\n");
             }
         }
 
@@ -40,7 +38,7 @@ public class MySQLConnection implements IMySQLDatabaseDAO {
                 con.close();
                 System.out.println("Connection closed.");
             } catch (SQLException ex) {
-                Logger.getLogger(MySQLConnection.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println("SQL Exception " + ex.getMessage() + "\n");
             }  
         }
     }
