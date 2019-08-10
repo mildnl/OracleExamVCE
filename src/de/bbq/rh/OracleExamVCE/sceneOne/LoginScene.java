@@ -165,7 +165,7 @@ public class LoginScene {
             }
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("Login Scene Username/Password check Exception: " + e.getMessage());
         }
         return checkPassed;
     }
